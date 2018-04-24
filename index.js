@@ -1,15 +1,15 @@
 const express = require('express')
 const path = require('path')
 const PORT = process.env.PORT || 5000
-const bodyParser = require("body-parser");
+const request = require('request');
+var async = require('async');
 
-var app = express()
-  .use(express.static(path.join(__dirname, 'public')))
-  .use(bodyParser.json())
-  .set('views', path.join(__dirname, 'views'))
-  .set('view engine', 'ejs')
-  .get('/', (req, res) => res.render('pages/index'))
-  .listen(PORT, () => console.log(`Listening on ${ PORT }`));
+var app = express();
+
+app.use(express.static(path.join(__dirname, 'public')));
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+app.get('/', (req, res) => res.render('pages/index'));
 
 function handleError(res, reason, message, code) {
   console.log("ERROR: " + reason);
@@ -20,20 +20,23 @@ function handleError(res, reason, message, code) {
  *    GET: finds all contacts
  *    POST: creates a new contact
  */
+ app.get("/allocine/:id", function(req, res) {
+  var cinema = req.params.id;
+ });
 
 app.get("/allocine", function(req, res) {
   var o = {} // empty Object
-  var key = 'Orientation Sensor';
+  var key = 'Names';
   o[key] = []; // empty Array, which you can push() values into
 
 
   var data = {
-    sampleTime: '1450632410296',
-    data: '76.36731:3.4651554:0.5665419'
+    city: 'montpellier',
+    data: 'Multiplexe Odysseum'
   };
   var data2 = {
-    sampleTime: '1450632410296',
-    data: '78.15431:0.5247617:-0.20050584'
+    city: 'montpellier',
+    data: 'Comedie'
   };
   o[key].push(data);
   o[key].push(data2);
@@ -41,5 +44,21 @@ app.get("/allocine", function(req, res) {
   res.status(200).json(o);
 });
 
-app.post("/allocine", function(req, res) {
+function callAPI(url, callback) {
+  request(url, { json: true }, (err, res, body) => {
+    if (err) { return console.log(err); }
+    console.log('body:', body);
+    callback(body);
+  });
+}
+
+app.get("/coinmarketcap/:id", function(req, res) {
+  var coin = req.params.id;
+  console.log('coin:', coin);
+  var url = "https://api.coinmarketcap.com/v1/ticker/" + coin + "/";
+  var body = callAPI(url, function(data) {
+    res.json(data);
+  });
 });
+
+app.listen(PORT, () => console.log(`Listening on ${ PORT }`));
