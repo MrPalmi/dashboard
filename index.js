@@ -2,7 +2,6 @@ const express = require('express')
 const path = require('path')
 const PORT = process.env.PORT || 5000
 const request = require('request');
-var async = require('async');
 
 var app = express();
 
