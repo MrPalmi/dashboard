@@ -50,8 +50,6 @@ app.get("/steam", function(req, res) {
   });
 });
 
-
-
 function callAPI(url, callback) {
   request(url, { json: true }, (err, res, body) => {
     if (err) { return console.log(err); }
@@ -59,6 +57,25 @@ function callAPI(url, callback) {
     callback(body);
   });
 }
+
+app.get("/stockmarket/:id", function(req, res) {
+  var symbol = req.params.id;
+  
+  var url = "https://api.iextrading.com/1.0/stock/" + symbol + "/price";
+  
+  var body = callAPI(url, function(data) {
+    res.json(data);
+  });
+});
+
+app.get("/stockmarket/", function(req, res) {
+  var url = "https://api.iextrading.com/1.0/ref-data/symbols";
+  
+  var body = callAPI(url, function(data) {
+    res.json(data);
+  });
+});
+
 
 app.get("/coinmarketcap/:id", function(req, res) {
   var coin = req.params.id;
