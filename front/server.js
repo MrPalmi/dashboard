@@ -50,6 +50,29 @@ const widget = [
     },
 ];
 
+/*var request = new XMLHttpRequest();
+request.open('GET', 'https://epitech-dashboard.herokuapp.com/widgets');
+request.onload  = function(){
+    var data = JSON.parse(this.response);
+    data.forEach(function(elem) {
+        const card = document.createElement('div');
+        card.setAttribute('class', 'card');
+
+        const h1 = document.createElement('h1');
+        h1.textContent = elem.name;
+
+        const p = document.createElement('p');
+        p.textContent = elem.param + elem.description;
+
+        container.appendChild(card);
+        card.appendChild(h1);
+        card.appendChild(p)
+    })
+}
+request.send();*/
+
+
+
 function addWidget(){
     var selected = document.getElementById("widgetName");
     var param = document.getElementById("param");
@@ -62,6 +85,10 @@ function addWidget(){
     });
     console.log("adding a widget");
     addHtmlWidget(selected.selectedIndex - 1);
+    /*var request = new XMLHttpRequest();
+    request.open('POST', 'https://epitech-dashboard.herokuapp.com/widgets');
+    request.setRequestHeader("Content-type", "application/json");
+    request.send(widget[selected.selectedIndex - 1]);*/
 }
 
 const app = document.getElementById('root');
@@ -71,7 +98,6 @@ container.setAttribute('class', 'container');
 app.appendChild(container);
 
 var i = 0;
-//var request = new XMLHttpRequest();
 function addHtmlWidget (index) {
     const card = document.createElement('div');
     card.setAttribute('class', 'card');
