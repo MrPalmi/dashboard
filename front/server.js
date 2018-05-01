@@ -1,59 +1,45 @@
 const widget = [
     {
         "name": "Météo",
-        "isActivated": 0,
-        "url": "https://epitech-dashboard.herokuapp.com/meteo/",
-        "param": "",
-        "description": "°C",
+        "url": "https://epitech-dashboard.herokuapp.com/weather/",
+        "param": ""
     },
     {
         "name": "Bourse",
-        "isActivated": 0,
-        "url": "https://epitech-dashboard.herokuapp.com/bourse/",
-        "param": "",
-        "description": "$",
+        "url": "https://epitech-dashboard.herokuapp.com/stockmarket/",
+        "param": ""
     },
     {
         "name": "Date/Heure",
-        "isActivated": 0,
         "url": "https://epitech-dashboard.herokuapp.com/date/",
-        "param": "",
-        "description": "",
+        "param": ""
     },
     {
         "name": "Google Map",
-        "isActivated": 0,
         "url": "https://epitech-dashboard.herokuapp.com/map/",
-        "param": "",
-        "description": "",
+        "param": ""
     },
     {
         "name": "Steam",
-        "isActivated": 0,
         "url": "https://epitech-dashboard.herokuapp.com/steam/",
-        "param": "",
-        "description": "joueurs connectés",
+        "param": ""
     },
     {
         "name": "Allociné",
-        "isActivated": 0,
         "url": "https://epitech-dashboard.herokuapp.com/allociné/",
-        "param": "",
-        "description": "",
+        "param": ""
     },
     {
         "name": "Coinmarketcap",
-        "isActivated": 0,
-        "url": "https://epitech-dashboard.herokuapp.com/coimarketcapp/",
-        "param": "",
-        "description": "$",
+        "url": "https://epitech-dashboard.herokuapp.com/coinmarketcap/",
+        "param": ""
     },
 ];
 
-/*var request = new XMLHttpRequest();
+/*let request = new XMLHttpRequest();
 request.open('GET', 'https://epitech-dashboard.herokuapp.com/widgets');
 request.onload  = function(){
-    var data = JSON.parse(this.response);
+    let data = JSON.parse(this.response);
     data.forEach(function(elem) {
         const card = document.createElement('div');
         card.setAttribute('class', 'card');
@@ -74,18 +60,15 @@ request.send();*/
 
 
 function addWidget(){
-    var selected = document.getElementById("widgetName");
-    var param = document.getElementById("param");
+    let selected = document.getElementById("widgetName");
+    let param = document.getElementById("param");
     widget.forEach(function(elem){
         if (elem.name === selected.options[selected.selectedIndex].value){
-            elem.isActivated = 1;
             elem.param = param.value;
-            console.log(elem.name + elem.isActivated);
         }
     });
-    console.log("adding a widget");
     addHtmlWidget(selected.selectedIndex - 1);
-    /*var request = new XMLHttpRequest();
+    /*let request = new XMLHttpRequest();
     request.open('POST', 'https://epitech-dashboard.herokuapp.com/widgets');
     request.setRequestHeader("Content-type", "application/json");
     request.send(widget[selected.selectedIndex - 1]);*/
@@ -97,19 +80,76 @@ container.setAttribute('class', 'container');
 
 app.appendChild(container);
 
-var i = 0;
+function formatData(index, data){
+    let p = "";
+    switch (index) {
+        case 0:
+            let temps = "";
+            console.log(data.weather[0].main);
+            switch (data.weather[0].main){
+                case 'Clouds':
+                    temps = "nuageux";
+                    break;
+                case 'Rain':
+                    temps = "pluvieux";
+                    break;
+                case 'Snow':
+                    temps = "neigeux";
+                    break;
+                default:
+                    temps = "ensoleillé"
+            }
+            p = "A " + widget[index].param + " il fait actuellement " + data.main.temp + "°C et le temps est " + temps + ".";
+            break;
+        case 1:
+            p = "Le cours de l'action " + widget[index].param + " est actuellement de " + data + "$."
+            break;
+        case 2:
+            break;
+        case 3:
+            break;
+        case 4:
+            break;
+        case 5:
+            break;
+        case 6:
+            break;
+        case 7:
+            break;
+        case 8:
+            break;
+        case 9:
+            break;
+
+    }
+    return p;
+}
+
+let i = 0;
 function addHtmlWidget (index) {
-    const card = document.createElement('div');
-    card.setAttribute('class', 'card');
-    const h1 = document.createElement('h1');
-    h1.textContent = widget[index].name;
+    let url = "";
+    url = widget[index].url + widget[index].param;
+    console.log(url);
 
-    const p = document.createElement('p');
-    p.setAttribute("id", "p" + i);
-    p.textContent = widget[index].param + widget[index].description;
+    let request = new XMLHttpRequest();
+    request.open('GET', url);
+    request.onload  = function() {
+        let data = JSON.parse(this.response);
 
-    container.appendChild(card);
-    card.appendChild(h1);
-    card.appendChild(p);
+        const card = document.createElement('div');
+        card.setAttribute('class', 'card');
+
+        const h1 = document.createElement('h1');
+        h1.textContent = widget[index].name;
+
+        const p = document.createElement('p');
+        p.setAttribute("id", "p" + i);
+        p.textContent = formatData(index, data);
+
+        container.appendChild(card);
+        card.appendChild(h1);
+        card.appendChild(p);
+    };
+    request.send();
     i++;
 }
