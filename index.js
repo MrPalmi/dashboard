@@ -10,7 +10,7 @@ var app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-app.get('/', (req, res) => res.render('pages/index'));
+app.get('/', (req, res) => res.sendFile('views/pages/index.html', { root: __dirname }));
 
 function handleError(res, reason, message, code) {
   console.log("ERROR: " + reason);
@@ -33,7 +33,6 @@ app.get("/steam/:id", function(req, res) {
   var game = req.params.id;
 
   var userStats = new SteamApi.UserStats('steam-api-key');
-
 
   userStats.GetNumberOfCurrentPlayers(game).done(function(result){
     console.log(result);
