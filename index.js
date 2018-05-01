@@ -57,6 +57,28 @@ function callAPI(url, callback) {
   });
 }
 
+app.get("/lgtandlat/:id", function(req, res) {
+  var address = req.params.id;
+  
+  var url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "&key=AIzaSyCoXD3dN_6TPERUPESZZJCQINpj-9wH6mY"
+
+  var body = callAPI(url, function(data) {
+    console.log(data);
+
+    console.log("STATUS : " + data["status"]);
+
+    if (data["status"] == "OK") {
+
+      res.json(data["results"][0]["geometry"]["location"]);
+
+    } else {
+    
+      res.json(data["status"]);
+    
+    }
+  });
+});
+
 app.get("/weather/:id", function(req, res) {
   var city = req.params.id;
   
@@ -66,6 +88,34 @@ app.get("/weather/:id", function(req, res) {
     res.json(data);
   });
 });
+
+app.get("/time/:id", function(req, res) {
+  var zone = req.params.id;
+
+  var url = "https://epitech-dashboard.herokuapp.com/lgtandlat/" + zone
+
+  var body = callAPI(url, function(data) {
+  
+    lng = data["lng"]
+    lat = data["lat"]
+
+    var nurl = "http://api.timezonedb.com/v2/get-time-zone?key=7C8ZRCKIUQKD&format=json&by=position&lng=" + lng + "&lat=" + lat;
+  
+    var bbody = callAPI(nurl, function(ddata) {
+      res.json(ddata);
+    });
+  });
+  // lng = 3.889715
+
+  // lat = 43.61111
+
+  // var url = "http://api.timezonedb.com/v2/get-time-zone?key=7C8ZRCKIUQKD&format=json&by=position&lng=" + lng + "&lat=" + lat;
+  
+  // var body = callAPI(url, function(data) {
+  //   res.json(data);
+  // });
+});
+
 
 app.get("/stockmarket/:id", function(req, res) {
   var symbol = req.params.id;
