@@ -14,7 +14,8 @@
     "ejs": "^2.5.6",
     "express": "^4.15.2",
     "body-parser": "^1.13.3",
-    "allocine-api": "*"
+    "allocine-api": "*",
+    "steam-api": "*"
   },
   "devDependencies": {
     "request": "^2.81.0",

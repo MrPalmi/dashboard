@@ -3,6 +3,7 @@ const path = require('path')
 const PORT = process.env.PORT || 5000
 const request = require('request');
 const allocine = require('allocine-api');
+const SteamApi = require('steam-api');
 
 var app = express();
 
@@ -27,6 +28,29 @@ app.get("/allocine/:id", function(req, res) {
 
   });
 });
+
+app.get("/steam/:id", function(req, res) {
+  var game = req.params.id;
+
+  var userStats = new SteamApi.UserStats('steam-api-key');
+
+
+  userStats.GetNumberOfCurrentPlayers(game).done(function(result){
+    console.log(result);
+    res.status(200).json(result);
+  });
+});
+
+app.get("/steam", function(req, res) {
+  
+  var appl = new SteamApi.App('steam-api-key');
+
+  appl.GetAppList().done(function(result){
+    console.log(result);
+  });
+});
+
+
 
 function callAPI(url, callback) {
   request(url, { json: true }, (err, res, body) => {
