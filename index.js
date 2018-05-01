@@ -58,6 +58,16 @@ function callAPI(url, callback) {
   });
 }
 
+app.get("/weather/:id", function(req, res) {
+  var city = req.params.id;
+  
+  var url = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=metric&APPID=3ee58512b501c5a957e02833caa95404";
+  
+  var body = callAPI(url, function(data) {
+    res.json(data);
+  });
+});
+
 app.get("/stockmarket/:id", function(req, res) {
   var symbol = req.params.id;
   
