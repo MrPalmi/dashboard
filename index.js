@@ -105,15 +105,6 @@ app.get("/time/:id", function(req, res) {
       res.json(ddata);
     });
   });
-  // lng = 3.889715
-
-  // lat = 43.61111
-
-  // var url = "http://api.timezonedb.com/v2/get-time-zone?key=7C8ZRCKIUQKD&format=json&by=position&lng=" + lng + "&lat=" + lat;
-  
-  // var body = callAPI(url, function(data) {
-  //   res.json(data);
-  // });
 });
 
 
