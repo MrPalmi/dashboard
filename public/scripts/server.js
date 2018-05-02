@@ -11,7 +11,7 @@ const widget = [
     },
     {
         "name": "Date/Heure",
-        "url": "https://epitech-dashboard.herokuapp.com/date/",
+        "url": "https://epitech-dashboard.herokuapp.com/time/",
         "param": ""
     },
     {
@@ -102,13 +102,17 @@ function formatData(index, data){
             p = "A " + widget[index].param + " il fait actuellement " + data.main.temp + "°C et le temps est " + temps + ".";
             break;
         case 1:
-            p = "Le cours de l'action " + widget[index].param + " est actuellement de " + data + "$."
+            p = "Le cours de l'action " + widget[index].param + " est actuellement de " + data + "$.";
             break;
         case 2:
+            let array = data.formatted.split(" ");
+            let date = array[0].split("-");
+            p = "A " + widget[index].param + " il est actuellement " + array[1] + " et nous sommes le " + date[2] + "-" + date[1] + "-" + date[0] + ".";
             break;
         case 3:
             break;
         case 4:
+            p = "Il y a actuellement " + data +  " joueurs connectés à " + widget[index].param + ".";
             break;
         case 5:
             break;
