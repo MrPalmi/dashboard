@@ -4,10 +4,14 @@ const PORT = process.env.PORT || 5000
 const request = require('request');
 const allocine = require('allocine-api');
 const SteamApi = require('steam-api');
+const bodyParser = require("body-parser");
+
 
 var app = express();
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.get('/', (req, res) => res.sendFile('views/pages/index.html', { root: __dirname }));
@@ -146,7 +150,7 @@ app.get("/widgets/", function(req, res) {
 });
 
 app.post("/widgets/", function (req, res) {
-  console.log(req.url);
+  console.log(req.body.url);
 });
 
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`));
