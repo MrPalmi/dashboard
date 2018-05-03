@@ -68,10 +68,10 @@ function addWidget(){
         }
     });
     addHtmlWidget(selected.selectedIndex - 1);
-    /*let request = new XMLHttpRequest();
+    let request = new XMLHttpRequest();
     request.open('POST', 'https://epitech-dashboard.herokuapp.com/widgets');
     request.setRequestHeader("Content-type", "application/json");
-    request.send(widget[selected.selectedIndex - 1]);*/
+    request.send(widget[selected.selectedIndex - 1]);
 }
 
 const app = document.getElementById('root');
