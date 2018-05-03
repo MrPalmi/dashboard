@@ -52,7 +52,6 @@ app.get("/steam", function(req, res) {
 function callAPI(url, callback) {
   request(url, { json: true }, (err, res, body) => {
     if (err) { return console.log(err); }
-    console.log('body:', body);
     callback(body);
   });
 }
@@ -148,6 +147,7 @@ app.get("/widgets/", function(req, res) {
 
 app.post("/widgets/", function (req, res) {
   console.log(req.body);
+  console.log("Test : " + req);
 });
 
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`));
