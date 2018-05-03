@@ -11,6 +11,11 @@ html {
     margin: 0 auto;
 }
 
+#map {
+    height: 250px;
+    width: 100%;
+}
+
 h1 {
     text-align: center;
     padding: 1.5rem 2.5rem;

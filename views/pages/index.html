@@ -8,26 +8,27 @@
     <title>karim</title>
 
     <link href="https://fonts.googleapis.com/css?family=Dosis:400,700" rel="stylesheet">
-    <link type="text/css" href="stylesheets/style.css" rel="stylesheet">
+    <link type="text/css" href="public/stylesheets/style.css" rel="stylesheet">
 
 </head>
 <body>
 <select id="widgetName">
     <option value="NULL">Selectionnez un widget</option>
-    <option value="Météo">Météo</option>
-    <option value="Bourse">Bourse</option>
-    <option value="Date/Heure">Date & Heure</option>
-    <option value="Google Map">Google Map</option>
-    <option value="Steam">Steam</option>
-    <option value="Allociné">Allociné</option>
-    <option value="Coinmarketcap">Cryptomonnaie</option>
+    <option value="Météo">Météo d'une ville</option>
+    <option value="Bourse">Valeur boursière d'une action</option>
+    <option value="Date/Heure">Date et heure d'une ville</option>
+    <option value="Google Map">Afficher une ville sur Google Map</option>
+    <option value="Steam">Nombre de joueurs connectés à un jeux Steam</option>
+    <option value="Allociné">Horaires d'un cinéma</option>
+    <option value="Coinmarketcap">Valeur d'un cryptomonnaie</option>
+    <option value="Subreddit Subscriber">Nombre de subscribers à un subreddit</option>
 </select>
 <input id="param" type="text" placeholder="Paramètre du Widget">
 <button onclick="addWidget()">Ajouter</button>
 
 </div>
 <div id="root">
-    <script src="scripts/server.js"></script>
+    <script src="public/scripts/server.js"></script>
 </div>
 
 </body>
