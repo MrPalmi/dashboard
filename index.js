@@ -146,8 +146,7 @@ app.get("/widgets/", function(req, res) {
 });
 
 app.post("/widgets/", function (req, res) {
-  console.log(req.body);
-  console.log("Test : " + JSON.parse(req));
+  console.log(req.url);
 });
 
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`));
