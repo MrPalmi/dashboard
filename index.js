@@ -152,7 +152,9 @@ app.get("/widgets/", function(req, res) {
 app.post("/widgets/", function (req, res) {
   console.log('\n-- INCOMING REQUEST AT ' + new Date().toISOString());
   console.log(req.method + ' ' + req.url);
-  console.log(req.body);
+  console.log("NAME : " + req.body.name)
+  console.log("URL : " + req.body.url)
+  console.log("PARAM :" + req.body.param)
 });
 
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`));

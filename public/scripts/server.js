@@ -71,7 +71,7 @@ function addWidget(){
     let request = new XMLHttpRequest();
     request.open('POST', 'https://epitech-dashboard.herokuapp.com/widgets');
     request.setRequestHeader("Content-type", "application/json");
-    request.send(widget[selected.selectedIndex - 1]);
+    request.send(JSON.stringify(widget[selected.selectedIndex - 1]));
 }
 
 const app = document.getElementById('root');
