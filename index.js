@@ -150,6 +150,8 @@ app.get("/widgets/", function(req, res) {
 });
 
 app.post("/widgets/", function (req, res) {
+  console.log('\n-- INCOMING REQUEST AT ' + new Date().toISOString());
+  console.log(req.method + ' ' + req.url);
   console.log(req.body);
 });
 
