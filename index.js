@@ -41,7 +41,7 @@ app.get("/steam/:id", function(req, res) {
 });
 
 app.get("/steam", function(req, res) {
-  
+
   var appl = new SteamApi.App('steam-api-key');
 
   appl.GetAppList().done(function(result){
@@ -59,7 +59,7 @@ function callAPI(url, callback) {
 
 app.get("/lgtandlat/:id", function(req, res) {
   var address = req.params.id;
-  
+
   var url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "&key=AIzaSyCoXD3dN_6TPERUPESZZJCQINpj-9wH6mY"
 
   var body = callAPI(url, function(data) {
@@ -72,18 +72,18 @@ app.get("/lgtandlat/:id", function(req, res) {
       res.json(data["results"][0]["geometry"]["location"]);
 
     } else {
-    
+
       res.json(data["status"]);
-    
+
     }
   });
 });
 
 app.get("/weather/:id", function(req, res) {
   var city = req.params.id;
-  
+
   var url = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=metric&APPID=3ee58512b501c5a957e02833caa95404";
-  
+
   var body = callAPI(url, function(data) {
     res.json(data);
   });
@@ -95,12 +95,12 @@ app.get("/time/:id", function(req, res) {
   var url = "https://epitech-dashboard.herokuapp.com/lgtandlat/" + zone
 
   var body = callAPI(url, function(data) {
-  
+
     lng = data["lng"]
     lat = data["lat"]
 
     var nurl = "http://api.timezonedb.com/v2/get-time-zone?key=7C8ZRCKIUQKD&format=json&by=position&lng=" + lng + "&lat=" + lat;
-  
+
     var bbody = callAPI(nurl, function(ddata) {
       res.json(ddata);
     });
@@ -110,9 +110,9 @@ app.get("/time/:id", function(req, res) {
 
 app.get("/stockmarket/:id", function(req, res) {
   var symbol = req.params.id;
-  
+
   var url = "https://api.iextrading.com/1.0/stock/" + symbol + "/price";
-  
+
   var body = callAPI(url, function(data) {
     res.json(data);
   });
@@ -120,7 +120,7 @@ app.get("/stockmarket/:id", function(req, res) {
 
 app.get("/stockmarket/", function(req, res) {
   var url = "https://api.iextrading.com/1.0/ref-data/symbols";
-  
+
   var body = callAPI(url, function(data) {
     res.json(data);
   });
@@ -134,6 +134,20 @@ app.get("/coinmarketcap/:id", function(req, res) {
   var body = callAPI(url, function(data) {
     res.json(data);
   });
+});
+
+app.get("/widgets/", function(req, res) {
+  var o = {} // empty Object
+
+  o['name'] = 'a';
+  o['param'] = 'a';
+  o['url'] = 'a';
+
+  res.json(o);
+});
+
+app.post("/widgets/", function (req, res) {
+  console.log(req.body);
 });
 
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`));
