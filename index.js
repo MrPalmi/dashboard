@@ -132,22 +132,51 @@ app.get("/stockmarket/", function(req, res) {
 
 app.get("/coinmarketcap/:id", function(req, res) {
   var coin = req.params.id;
-  console.log('coin:', coin);
-  var url = "https://api.coinmarketcap.com/v1/ticker/" + coin + "/";
+    var url = "https://api.coinmarketcap.com/v2/ticker/" + coin + "/";
   var body = callAPI(url, function(data) {
     res.json(data);
   });
 });
 
-app.get("/widgets/", function(req, res) {
-  var o = {} // empty Object
-
-  o['name'] = 'a';
-  o['param'] = 'a';
-  o['url'] = 'a';
-
-  res.json(o);
+app.get("/coinmarketcap/", function(req, res) {
+  var url = "https://api.coinmarketcap.com/v2/listings/";
+  var body = callAPI(url, function(data) {
+    res.json(data);
+  });
 });
+
+app.get("/redditsubcount/:id", function(req, res) {
+  var subreddit = req.params.id;
+  console.log('subreddit:', subreddit);
+  var url = "https://www.reddit.com/r/" + subreddit + ".json";
+  var body = callAPI(url, function(data) {
+    if (data['data']['children'][0]) {
+      res.json(data['data']['children'][0]['data']["subreddit_subscribers"]);
+    } else {
+      res.json({error:"Couldn't fetch subscriber count"})
+    }
+  });
+});
+
+app.get("/subreddit/:id", function(req, res) {
+  var subreddit = req.params.id;
+  console.log('subreddit:', subreddit);
+  var url = "https://www.reddit.com/r/" + subreddit + ".json";
+  var body = callAPI(url, function(data) {
+    if (data['data']['children'][0]) {
+      res.json(data);
+    } else {
+      res.json({error:"Couldn't fetch subscriber count"})
+    }
+  });
+});
+
+var widgets = {}
+
+app.get("/widgets/", function(req, res) {
+  res.json(widgets);
+});
+
 
 app.post("/widgets/", function (req, res) {
   console.log('\n-- INCOMING REQUEST AT ' + new Date().toISOString());
@@ -155,6 +184,13 @@ app.post("/widgets/", function (req, res) {
   console.log("NAME : " + req.body.name)
   console.log("URL : " + req.body.url)
   console.log("PARAM :" + req.body.param)
+  var data = {
+    name: req.body.name,
+    url: req.body.url,
+    param: req.body.param
+  };
+  if (req.body.id)
+    widget[req.body.id].push(data);
 });
 
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`));
