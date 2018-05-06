@@ -172,7 +172,7 @@ app.get("/subreddit/:id", function(req, res) {
   });
 });
 
-var widgets = {}
+var widgets = []
 
 app.get("/widgets/", function(req, res) {
   res.json(widgets);
@@ -185,14 +185,12 @@ app.post("/widgets/", function (req, res) {
   console.log("NAME : " + req.body.name)
   console.log("URL : " + req.body.url)
   console.log("PARAM :" + req.body.param)
-  console.log("ID: " + req.body.id)
   var data = {
     name: req.body.name,
     url: req.body.url,
     param: req.body.param
   };
-  if (req.body.id)
-    widget[req.body.id].push(data);
+  widgets.push(data);
 });
 
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`));
