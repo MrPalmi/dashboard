@@ -152,6 +152,7 @@ function addHtmlWidget (index) {
             script1.async = false;
             const script2 = document.createElement('script');
             script2.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCoXD3dN_6TPERUPESZZJCQINpj-9wH6mY&callback=initMap';
+            script2.async = false;
             card.appendChild(div);
             card.appendChild(script1);
             card.appendChild(script2);
