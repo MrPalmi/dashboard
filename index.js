@@ -125,6 +125,7 @@ app.get("/stockmarket/", function(req, res) {
   var url = "https://api.iextrading.com/1.0/ref-data/symbols";
 
   var body = callAPI(url, function(data) {
+    console.log(JSON.stringify(data));
     res.json(data);
   });
 });

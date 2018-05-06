@@ -1,42 +1,42 @@
 const widget = [
     {
         'name': 'Météo',
-        'url': 'https://epitech-dashboard.herokuapp.com/weather/',
+        'url': '/weather/',
         'param': ''
     },
     {
         'name': 'Bourse',
-        'url': 'https://epitech-dashboard.herokuapp.com/stockmarket/',
+        'url': '/stockmarket/',
         'param': ''
     },
     {
         'name': 'Date/Heure',
-        'url': 'https://epitech-dashboard.herokuapp.com/time/',
+        'url': '/time/',
         'param': ''
     },
     {
         'name': 'Google Map',
-        'url': 'https://epitech-dashboard.herokuapp.com/map/',
+        'url': '/map/',
         'param': ''
     },
     {
         'name': 'Steam',
-        'url': 'https://epitech-dashboard.herokuapp.com/steam/',
+        'url': '/steam/',
         'param': ''
     },
     {
         'name': 'Allociné',
-        'url': 'https://epitech-dashboard.herokuapp.com/allocine/',
+        'url': '/allocine/',
         'param': ''
     },
     {
         'name': 'Coinmarketcap',
-        'url': 'https://epitech-dashboard.herokuapp.com/coinmarketcap/',
+        'url': '/coinmarketcap/',
         'param': ''
     },
     {
         'name': 'Subreddit Subscriber',
-        'url': 'https://epitech-dashboard.herokuapp.com/redditsubcount/',
+        'url': '/redditsubcount/',
         'param': ''
     },
 ];
@@ -55,7 +55,7 @@ function addWidget(){
     }
     addHtmlWidget(selected.selectedIndex - 1);
     let request = new XMLHttpRequest();
-    request.open('POST', 'https://epitech-dashboard.herokuapp.com/widgets');
+    request.open('POST', '/widgets');
     request.setRequestHeader('Content-type', 'application/json');
     request.send(JSON.stringify(widget[selected.selectedIndex - 1]));
 }
