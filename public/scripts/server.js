@@ -148,7 +148,7 @@ function addHtmlWidget (index) {
             const div = document.createElement('div');
             div.setAttribute('id', 'map');
             const script1 = document.createElement('script');
-            script1.src = 'public/scripts/map.js';
+            script1.src = 'scripts/map.js';
             const script2 = document.createElement('script');
             script2.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCoXD3dN_6TPERUPESZZJCQINpj-9wH6mY&callback=initMap';
             card.appendChild(div);
