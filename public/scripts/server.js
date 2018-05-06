@@ -59,6 +59,7 @@ function addWidget(){
     let request = new XMLHttpRequest();
     request.open('POST', '/widgets');
     request.setRequestHeader('Content-type', 'application/json');
+    console.log(JSON.stringify(widget[selected.selectedIndex - 1]));
     request.send(JSON.stringify(widget[selected.selectedIndex - 1]));
 }
 

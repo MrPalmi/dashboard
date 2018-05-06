@@ -50,6 +50,7 @@ app.get("/steam", function(req, res) {
 
   appl.GetAppList().done(function(result){
     console.log(result);
+    res.status(200).json(result);
   });
 });
 
@@ -125,7 +126,6 @@ app.get("/stockmarket/", function(req, res) {
   var url = "https://api.iextrading.com/1.0/ref-data/symbols";
 
   var body = callAPI(url, function(data) {
-    console.log(JSON.stringify(data));
     res.json(data);
   });
 });
@@ -185,6 +185,7 @@ app.post("/widgets/", function (req, res) {
   console.log("NAME : " + req.body.name)
   console.log("URL : " + req.body.url)
   console.log("PARAM :" + req.body.param)
+  console.log("ID: " + req.body.id)
   var data = {
     name: req.body.name,
     url: req.body.url,
