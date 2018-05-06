@@ -16,7 +16,7 @@ const widget = [
     },
     {
         'name': 'Google Map',
-        'url': '/map/',
+        'url': '/lgtandlat/',
         'param': ''
     },
     {
@@ -40,6 +40,8 @@ const widget = [
         'param': ''
     },
 ];
+
+const latlong = [];
 
 function addWidget(){
     let selected = document.getElementById('widgetName');
@@ -71,7 +73,6 @@ function formatData(index, data){
     switch (index) {
         case 0:
             let temps = '';
-            console.log(data.weather[0].main);
             switch (data.weather[0].main){
                 case 'Clouds':
                     temps = 'nuageux';
@@ -93,7 +94,7 @@ function formatData(index, data){
             p = 'Le cours de l\'action ' + widget[index].param + ' est actuellement de '+ data + '$.';
             break;
         case 2:
-            let array = data.formatted.split('');
+            let array = data.formatted.split(' ');
             let date = array[0].split('-');
             p = 'A ' + widget[index].param + ' il est actuellement ' + array[1] + ' et nous sommes le ' + date[2] + '-' + date[1] + '-' + date[0] + '.';
             break;
@@ -107,7 +108,8 @@ function formatData(index, data){
             /* Allociné */
             break;
         case 6:
-            p = 'La valeur du ' + data[0].name + ' est de ' + data[0].price_usd + '$.';
+            p = 'La valeur du ' + data.data.name + ' est de ' + data.data.quotes.USD.price + '$.';
+            p = 'La valeur du ' + data.data.name + ' est de ' + data.data.quotes.USD.price + '$.';
             break;
         case 7:
             p = 'Le subreddit "' + widget[index].param + '" possède ' + data + ' subscribers.';
@@ -124,7 +126,6 @@ let i = 0;
 function addHtmlWidget (index) {
     let url = '';
     url = widget[index].url + widget[index].param;
-    console.log(url);
 
     const card = document.createElement('div');
     card.setAttribute('class', 'card');
@@ -134,30 +135,32 @@ function addHtmlWidget (index) {
     container.appendChild(card);
     card.appendChild(h1);
 
-    console.log(index);
-    if (index != 3) {
-        let request = new XMLHttpRequest();
-        request.open('GET', url);
-        request.onload = function () {
-            let data = JSON.parse(this.response);
 
+    let request = new XMLHttpRequest();
+    request.open('GET', url);
+    request.onload = function () {
+        let data = JSON.parse(this.response);
+
+        if (index === 3) {
+            latlong[0] = data.lat;
+            latlong[1] = data.lng;
+            const div = document.createElement('div');
+            div.setAttribute('id', 'map');
+            const script1 = document.createElement('script');
+            script1.src = 'public/scripts/map.js';
+            const script2 = document.createElement('script');
+            script2.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCoXD3dN_6TPERUPESZZJCQINpj-9wH6mY&callback=initMap';
+            card.appendChild(div);
+            card.appendChild(script1);
+            card.appendChild(script2);
+        }
+        else {
             const p = document.createElement('p');
             p.setAttribute('id', 'p' + i);
             p.textContent = formatData(index, data);
             card.appendChild(p);
-        };
-        request.send();
-        i++;
-    }
-    else {
-        const div = document.createElement('div');
-        div.setAttribute('id', 'map');
-        const script1 = document.createElement('script');
-        script1.src='public/scripts/map.js';
-        const script2 = document.createElement('script');
-        script2.src= 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCoXD3dN_6TPERUPESZZJCQINpj-9wH6mY&callback=initMap';
-        card.appendChild(div);
-        card.appendChild(script1);
-        card.appendChild(script2);
-    }
+        }
+    };
+    request.send();
+    i++;
 }
