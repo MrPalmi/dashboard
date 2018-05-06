@@ -178,6 +178,10 @@ app.get("/widgets/", function(req, res) {
   res.json(widgets);
 });
 
+app.get("/resetwidgets/", function(req, res) {
+  widgets = [];
+  res.status(200);
+});
 
 app.post("/widgets/", function (req, res) {
   console.log('\n-- INCOMING REQUEST AT ' + new Date().toISOString());
