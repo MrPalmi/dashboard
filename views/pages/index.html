@@ -32,9 +32,11 @@
     </style>
     <script type="text/javascript">
         $(document).ready(function(){
+            $("#paramlabel").change(function() {
+              console.log( "Handler for .change() called : " + $("#paramlabel").val());
+            });
             $("#paramlabel").focus(function() {
                 console.log('in : ' + $("#widgetName").val());
-                $("#paramlabel").attr("autocomplete", "on");
                 switch($("#widgetName").val()) {
                     case "Bourse":
                         var consumed = $.getJSON("/stockmarket", function() {
@@ -121,6 +123,36 @@
                         })
                         break;
                     case "Allociné":
+                        $("#paramlabel").on("change paste keyup", function() {
+                            if ($("#paramlabel").val() == "")
+                                return;
+                            console.log( "Handler for .change() called : " + $("#paramlabel").val());
+                            var consumed = $.getJSON("/allocinesearch/" + $("#paramlabel").val(), function() {
+                            })
+                            .done(function(data) {
+                                console.log(data)
+                                var vals = []
+                                if (data["feed"]["totalResults"] > 0) {
+                                    $.each(data["feed"]["theater"], function(value, key) {
+                                        var t = {'label': key.name + " - " + key.city, 'value':key.code};
+                                        vals.push(t);
+                                    });
+                                    console.log("vals: " + JSON.stringify(vals));                              
+                                    $("#paramlabel").autocomplete({
+                                        source:vals,
+                                        minLength: 3,
+                                        select: function(e, ui) {
+                                            e.preventDefault() // <--- Prevent the value from being inserted.
+                                            $("#param").val(ui.item.value);
+                                            $(this).val(ui.item.label);
+                                        }
+                                    });
+                                }
+                            })
+                            .fail(function() {
+                              console.log( "error" );
+                            })
+                        });
                         break;
                     default:
                     try {
@@ -130,6 +162,7 @@
                         }
                 }
             }).blur(function() {
+                $("#paramlabel").off("change paste keyup");
                 console.log('out');
             });
             $("#submit").click(function(){
@@ -138,6 +171,7 @@
                 $("#paramlabel").val('');
             })
         });
+
     function labelToParam() {
         console.log("labelToParam")
         if ($("#param").val() == '') {

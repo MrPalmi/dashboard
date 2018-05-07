@@ -33,6 +33,18 @@ app.get("/allocine/:id", function(req, res) {
   });
 });
 
+app.get("/allocinesearch/:id", function(req, res) {
+  var city = req.params.id;
+  allocine.api('search', {q: city, filter: 'theater'}, function(error, results) {
+    if(error) { console.log('Error : '+ error); return; }
+
+    console.log('Voici les données retournées par l\'API Allociné:');
+    console.log(JSON.stringify(results));
+    res.status(200).json(results);
+  });
+});
+
+
 app.get("/steam/:id", function(req, res) {
   var game = req.params.id;
 
@@ -175,6 +187,7 @@ app.get("/subreddit/:id", function(req, res) {
 var widgets = []
 
 app.get("/widgets/", function(req, res) {
+  console.log("get widgets");
   res.json(widgets);
 });
 
@@ -186,9 +199,9 @@ app.get("/resetwidgets/", function(req, res) {
 app.post("/widgets/", function (req, res) {
   console.log('\n-- INCOMING REQUEST AT ' + new Date().toISOString());
   console.log(req.method + ' ' + req.url);
-  console.log("NAME : " + req.body.name)
-  console.log("URL : " + req.body.url)
-  console.log("PARAM :" + req.body.param)
+  console.log("NAME : " + req.body.name);
+  console.log("URL : " + req.body.url);
+  console.log("PARAM :" + req.body.param);
   var data = {
     name: req.body.name,
     url: req.body.url,
