@@ -174,9 +174,16 @@
 
     function labelToParam() {
         console.log("labelToParam")
-        if ($("#param").val() == '') {
+        var opt = $("#widgetName").val();
+        if ((opt == "Bourse" || opt == "Steam" || opt == "Allociné" || opt == "Coinmarketcap") && $("#param").val() == '') {
+            event.preventDefault();
+            $("#paramerror").css("display", "inline-block");
+            $("#paramerror").fadeOut(4000);
+            return;
+        } else if ($("#param").val() == '') {
             $("#param").val($("#paramlabel").val());
         }
+        addWidget();
     }
     </script>
 
@@ -195,7 +202,8 @@
 </select>
 <input id="paramlabel" type="text" placeholder="Paramètre du Widget">
 <input id="param" type="hidden">
-<button id="submit" onclick="labelToParam(); addWidget()">Ajouter</button>
+<button id="submit" onclick="labelToParam()">Ajouter</button>
+<span id="paramerror" style="display: none; color: red;">Choisir une option dans la liste</span>
 
 </div>
 <div id="root">
