@@ -42,13 +42,19 @@ const widget = [
 ];
 
 const latlong = [];
+let map = 0;
 
 let firstRequest = new XMLHttpRequest();
 firstRequest.open('GET', '/widgets');
 firstRequest.onload = function () {
     let data = JSON.parse(this.response);
-    for (let i = 0; data[i]; i++) {
-        addHtmlWidgetStart(data[i])
+    for (let i = 0; data[i] ; i++) {
+        if (data[i].name === 'Google Map'){
+            console.log('too much map');
+        }
+        else {
+            addHtmlWidgetStart(data[i])
+        }
     }
 };
 firstRequest.send();
@@ -66,7 +72,14 @@ function addWidget(){
             });
         }
     }
-    addHtmlWidget(selected.selectedIndex - 1);
+    if (selected.options[selected.selectedIndex].value - 1 === 3 && map != 0){
+        console.log('too much map');
+    }
+    else {
+        addHtmlWidget(selected.selectedIndex - 1);
+        if (selected.options[selected.selectedIndex].value - 1 === 3)
+            map++;
+    }
     let request = new XMLHttpRequest();
     request.open('POST', '/widgets');
     request.setRequestHeader('Content-type', 'application/json');
@@ -134,50 +147,58 @@ function formatData(index, data){
 }
 
 let i = 0;
-
 function addHtmlWidget (index) {
-    let url = '';
-    url = widget[index].url + widget[index].param;
+    if (index === 3 && map != 0){
+        console.log('too much map');
+    }
+    else {
+        let url = '';
+        url = widget[index].url + widget[index].param;
 
-    const card = document.createElement('div');
-    card.setAttribute('class', 'card');
+        const card = document.createElement('div');
+        card.setAttribute('class', 'card');
 
-    const h1 = document.createElement('h1');
-    h1.textContent = widget[index].name;
-    container.appendChild(card);
-    card.appendChild(h1);
+        const h1 = document.createElement('h1');
+        h1.textContent = widget[index].name;
+        container.appendChild(card);
+        card.appendChild(h1);
 
 
-    let request = new XMLHttpRequest();
-    request.open('GET', url);
-    request.onload = function () {
-        let data = JSON.parse(this.response);
+        let request = new XMLHttpRequest();
+        request.open('GET', url);
+        request.onload = function () {
+            let data = JSON.parse(this.response);
 
-        if (index === 3) {
-            latlong[0] = data.lat;
-            latlong[1] = data.lng;
-            const div = document.createElement('div');
-            div.setAttribute('id', 'map');
-            const script1 = document.createElement('script');
-            script1.src = 'scripts/map.js';
-            script1.async = false;
-            const script2 = document.createElement('script');
-            script2.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCoXD3dN_6TPERUPESZZJCQINpj-9wH6mY&callback=initMap';
-            script2.async = false;
-            card.appendChild(div);
-            card.appendChild(script1);
-            card.appendChild(script2);
-        }
-        else {
-            const p = document.createElement('p');
-            p.setAttribute('id', 'p' + i);
-            p.textContent = formatData(index, data);
-            card.appendChild(p);
-        }
-    };
-    request.send();
-    i++;
+            if (index === 3 && map === 0) {
+                latlong[0] = data.lat;
+                latlong[1] = data.lng;
+                const div = document.createElement('div');
+                div.setAttribute('id', 'map');
+                const script1 = document.createElement('script');
+                script1.src = 'scripts/map.js';
+                script1.async = false;
+                const script2 = document.createElement('script');
+                script2.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCoXD3dN_6TPERUPESZZJCQINpj-9wH6mY&callback=initMap';
+                script2.async = false;
+                card.appendChild(div);
+                card.appendChild(script1);
+                card.appendChild(script2);
+                map++;
+            }
+            else {
+                const p = document.createElement('p');
+                p.setAttribute('id', 'p' + i);
+                p.textContent = formatData(index, data);
+                card.appendChild(p);
+            }
+        };
+        request.send();
+        i++;
+    }
 }
+
+
+
 
 function addHtmlWidgetStart (myData) {
     let url = '';
@@ -191,7 +212,7 @@ function addHtmlWidgetStart (myData) {
     container.appendChild(card);
     card.appendChild(h1);
 
-
+    let j = 0;
     let request = new XMLHttpRequest();
     request.open('GET', url);
     request.onload = function () {
