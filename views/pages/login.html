@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Login V1</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->	
+	<link rel="icon" type="image/png" href="img/icons/favicon.ico"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="stylesheets/util.css">
+	<link rel="stylesheet" type="text/css" href="stylesheets/main.css">
+<!--===============================================================================================-->
+	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('#login').submit(function(event) {
+	            var formData = {
+	    	        'username': $("#usernameLogin").val(),
+		            'password': $("#passwordLogin").val(),
+		        };
+				$.ajax({
+	       	    	type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
+	            	url: '/login', // the url where we want to POST
+	            	data: formData, // our data object
+	            	dataType: 'json', // what type of data do we expect back from the server
+	            	encode: true
+		        })
+	   	        .done(function(data) {
+	   	            console.log(data)
+	   	            if (data.success == 1) {
+						window.location.href = "/";
+	   	            } else {
+	   	            	$("#loginmessage").text(data.message);
+	   	            	$("#loginmessage").css("color", "red");
+	   	            	$("#loginmessage").css("display", "block");
+			            $("#loginmessage").fadeOut(4000);
+	   	            }
+	   	        })
+	   	        .fail(function() {
+	   	          console.log("error");
+	   	        })
+	            event.preventDefault();
+			});
+
+			$('#register').submit(function(event) {
+	            var formData = {
+	    	        'username': $("#usernameRegister").val(),
+		            'password': $("#passwordRegister").val(),
+		        };
+				$.ajax({
+	       	    	type: 'POST', 
+	            	url: '/register',
+	            	data: formData,
+	            	dataType: 'json',
+	            	encode: true
+		        })
+				.done(function(data) {
+	   	            console.log(data)
+	   	            if (data.success == 1) {
+						displayLogin();
+						$("#loginmessage").text(data.message);
+	   	            	$("#loginmessage").css("color", "green");
+	   	            	$("#loginmessage").css("display", "block");
+			            $("#loginmessage").fadeOut(4000);
+	   	            } else {
+	   	            	$("#registermessage").text(data.message);
+	   	            	$("#registermessage").css("color", "red");
+	   	            	$("#registermessage").css("display", "block");
+			            $("#registermessage").fadeOut(4000);
+	   	            }
+	   	        })
+	   	        .fail(function() {
+	   	          console.log("error");
+	   	        })
+	            event.preventDefault();
+			});
+		});
+	</script>
+
+</head>
+<body>
+	
+	<div class="limiter">
+		<div class="container-login100">
+			<div class="wrap-login100">
+				<div class="login100-pic js-tilt" data-tilt>
+					<img src="img/img-01.png" alt="IMG">
+				</div>
+
+				<form id="login" class="login100-form validate-form" action="/login" method="post">
+					<span class="login100-form-title">
+						Member Login
+					</span>
+
+					<div class="wrap-input100 validate-input" data-validate = "Username is required">
+						<input class="input100" type="text" name="username" placeholder="Username" id="usernameLogin">
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-envelope" aria-hidden="true"></i>
+						</span>
+					</div>
+
+					<div class="wrap-input100 validate-input" data-validate = "Password is required">
+						<input class="input100" type="password" name="pass" placeholder="Password" id="passwordLogin">
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-lock" aria-hidden="true"></i>
+						</span>
+					</div>
+					
+					<div class="container-login100-form-btn">
+						<button class="login100-form-btn">
+							Login
+						</button>
+						<span id="loginmessage" style="display: none; color: red; position: absolute; padding-top: 55px;"></span>
+					</div>
+
+					<div class="text-center p-t-136">
+						<a class="txt2" href="#" onclick="displayRegister()">
+							Create your Account
+							<i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
+						</a>
+					</div>
+				</form>
+
+				<form id="register" class="login100-form validate-form" action="/login" method="post" style="display: none;">
+					<span class="login100-form-title">
+						Member Registration
+					</span>
+
+					<div class="wrap-input100 validate-input" data-validate = "Username is required">
+						<input class="input100" type="text" name="username" placeholder="New username" id="usernameRegister">
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-envelope" aria-hidden="true"></i>
+						</span>
+					</div>
+
+					<div class="wrap-input100 validate-input" data-validate = "Password is required">
+						<input class="input100" type="password" name="pass" placeholder="New password" id="passwordRegister">
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-lock" aria-hidden="true"></i>
+						</span>
+					</div>
+					
+					<div class="container-login100-form-btn">
+						<button class="login100-form-btn">
+							Register
+						</button>
+						<span id="registermessage" style="display: none; color: red; position: absolute; padding-top: 55px;"></span>
+					</div>
+
+					<div class="text-center p-t-136">
+						<a class="txt2" href="#" onclick="displayLogin()">
+							Go back to login
+							<i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
+						</a>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	
+	<script type="text/javascript">
+		function displayRegister() {
+			$("#login").css("display", "none");
+			$("#register").css("display", "block");
+		}
+
+		function displayLogin() {
+			$("#login").css("display", "block");
+			$("#register").css("display", "none");
+		}
+	</script>
+
+	
+<!--===============================================================================================-->	
+<!--===============================================================================================-->
+	<script src="vendor/bootstrap/js/popper.js"></script>
+	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/select2/select2.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/tilt/tilt.jquery.min.js"></script>
+	<script >
+		$('.js-tilt').tilt({
+			scale: 1.1
+		})
+	</script>
+<!--===============================================================================================-->
+	<script src="scripts/main.js"></script>
+
+</body>
+</html>
