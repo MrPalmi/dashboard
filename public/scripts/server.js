@@ -303,7 +303,35 @@ function formatData(index, data){
 
 
 function formatAllociné(data){
+    var date = new Date();
+    var array = []
     console.log("=================");
-    console.log(data);
+    var month = date.getMonth() + 1;
+    var day = date.getDate() + 1;
+    var year = date.getFullYear();
+    var yet = 0;
+    data.feed.theaterShowtimes[0].movieShowtimes.forEach(function (element) {;
+        yet = 0;
+        if (year == parseInt(element.scr[0].d.slice(0, 4)) &&
+            day == parseInt(element.scr[0].d.slice(8, 10)) &&
+            month == parseInt(element.scr[0].d.slice(5,7))){
+                array.forEach(function(aElement) {
+                    if (aElement.title == element.onShow.movie.title){
+                        aElement.time += '/' + element.scr[0].t[0].$
+                        yet = 1;
+                    }
+                }
+            );
+            if (yet == 0)
+            {
+                var elem = new Object();
+                elem.title = element.onShow.movie.title;
+                elem.time = element.scr[0].t[0].$;
+                array.push(elem)
+            }
+        }
+        }
+    );
+    console.log(array);
     console.log("=================");
 }
