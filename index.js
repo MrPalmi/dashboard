@@ -6,15 +6,24 @@ const allocine = require('allocine-api');
 const SteamApi = require('steam-api');
 const bodyParser = require("body-parser");
 const fs = require('fs');
+const session = require('express-session');
 
 var app = express();
+
+var sess;
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+app.use(session({
+        secret: 'Sup3rS3cr3tC0d3',
+        name: 'session_cookie',
+        resave: false,
+        saveUninitialized: false
+      }));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-app.get('/', (req, res) => res.sendFile('views/pages/index.html', { root: __dirname }));
+//app.get('/', (req, res) => res.sendFile('views/pages/index.html', { root: __dirname }));
 
 function handleError(res, reason, message, code) {
   console.log("ERROR: " + reason);
@@ -25,9 +34,6 @@ app.get("/allocine/:id", function(req, res) {
   var cinema = req.params.id;
   allocine.api('showtimelist', {theaters: cinema}, function(error, results) {
     if(error) { console.log('Error : '+ error); return; }
-
-    console.log('Voici les données retournées par l\'API Allociné:');
-    console.log(results);
     res.status(200).json(results);
 
   });
@@ -37,9 +43,6 @@ app.get("/allocinesearch/:id", function(req, res) {
   var city = req.params.id;
   allocine.api('search', {q: city, filter: 'theater'}, function(error, results) {
     if(error) { console.log('Error : '+ error); return; }
-
-    console.log('Voici les données retournées par l\'API Allociné:');
-    console.log(JSON.stringify(results));
     res.status(200).json(results);
   });
 });
@@ -51,7 +54,6 @@ app.get("/steam/:id", function(req, res) {
   var userStats = new SteamApi.UserStats('steam-api-key');
 
   userStats.GetNumberOfCurrentPlayers(game).done(function(result){
-    console.log(result);
     res.status(200).json(result);
   });
 });
@@ -61,7 +63,6 @@ app.get("/steam", function(req, res) {
   var appl = new SteamApi.App('steam-api-key');
 
   appl.GetAppList().done(function(result){
-    console.log(result);
     res.status(200).json(result);
   });
 });
@@ -79,18 +80,10 @@ app.get("/lgtandlat/:id", function(req, res) {
   var url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "&key=AIzaSyCoXD3dN_6TPERUPESZZJCQINpj-9wH6mY"
 
   var body = callAPI(url, function(data) {
-    console.log(data);
-
-    console.log("STATUS : " + data["status"]);
-
     if (data["status"] == "OK") {
-
       res.json(data["results"][0]["geometry"]["location"]);
-
     } else {
-
       res.json(data["status"]);
-
     }
   });
 });
@@ -145,7 +138,7 @@ app.get("/stockmarket/", function(req, res) {
 
 app.get("/coinmarketcap/:id", function(req, res) {
   var coin = req.params.id;
-    var url = "https://api.coinmarketcap.com/v2/ticker/" + coin + "/";
+  var url = "https://api.coinmarketcap.com/v2/ticker/" + coin + "/";
   var body = callAPI(url, function(data) {
     res.json(data);
   });
@@ -160,7 +153,6 @@ app.get("/coinmarketcap/", function(req, res) {
 
 app.get("/redditsubcount/:id", function(req, res) {
   var subreddit = req.params.id;
-  console.log('subreddit:', subreddit);
   var url = "https://www.reddit.com/r/" + subreddit + ".json";
   var body = callAPI(url, function(data) {
     if (data['data']['children'][0]) {
@@ -173,7 +165,6 @@ app.get("/redditsubcount/:id", function(req, res) {
 
 app.get("/subreddit/:id", function(req, res) {
   var subreddit = req.params.id;
-  console.log('subreddit:', subreddit);
   var url = "https://www.reddit.com/r/" + subreddit + ".json";
   var body = callAPI(url, function(data) {
     if (data['data']['children'][0]) {
@@ -187,48 +178,161 @@ app.get("/subreddit/:id", function(req, res) {
 var widgets = []
 
 app.get("/widgets/", function(req, res) {
-  fs.readFile('widgets.json', 'utf8', function readFileCallback(err, data){
-    if (err){
-        console.log(err);
+  sess = req.session;
+  if (sess.username) {
+      fs.readFile('widgets.json', 'utf8', function readFileCallback(err, data){
+        if (err){
+            console.log(err);
+        } else {
+        obj = JSON.parse(data);
+        uname = sess.username;
+        res.json(JSON.parse(JSON.stringify(obj[uname].widgets)));
+      }});
     } else {
-    obj = JSON.parse(data); //now it an object
-    res.json(JSON.parse(JSON.stringify(obj.widgets)));
-  }});
+    res.status(403).send('403, You are not allowed to be here, try and log in ?');
+  }
 });
 
 app.get("/resetwidgets/", function(req, res) {
+  sess = req.session;
+  if (sess.username) {
   fs.readFile('widgets.json', 'utf8', function readFileCallback(err, data){
     if (err){
         console.log(err);
     } else {
-    obj = JSON.parse(data);
-    obj.widgets = []
-    json = JSON.stringify(obj);
-    fs.writeFile('widgets.json', json, 'utf8');
-  }});
-  res.status(200).json({});
+      obj = JSON.parse(data);
+      uname = sess.username;
+      obj[uname].widgets = []
+      json = JSON.stringify(obj);
+      fs.writeFile('widgets.json', json, 'utf8');
+    }});
+    res.status(200).redirect("/");
+  } else {
+    res.status(403).send('403, You are not allowed to be here, try and log in ?');
+  }
 });
 
 app.post("/widgets/", function (req, res) {
-  console.log('\n-- INCOMING REQUEST AT ' + new Date().toISOString());
-  console.log(req.method + ' ' + req.url);
-  console.log("NAME : " + req.body.name);
-  console.log("URL : " + req.body.url);
-  console.log("PARAM :" + req.body.param);
-  var widget = {
-    name: req.body.name,
-    url: req.body.url,
-    param: req.body.param
-  };
+  sess = req.session;
+  if (sess.username) {
+    console.log('\n-- INCOMING REQUEST AT ' + new Date().toISOString());
+    console.log(req.method + ' ' + req.url);
+    console.log("NAME : " + req.body.name);
+    console.log("URL : " + req.body.url);
+    console.log("PARAM :" + req.body.param);
+    var widget = {
+      name: req.body.name,
+      url: req.body.url,
+      param: req.body.param
+    };
+    fs.readFile('widgets.json', 'utf8', function readFileCallback(err, data){
+      if (err){
+          console.log(err);
+      } else {
+        obj = JSON.parse(data);
+        uname = sess.username;
+        obj[uname].widgets.push(widget);
+        json = JSON.stringify(obj);
+      fs.writeFile('widgets.json', json, 'utf8');
+    }});
+  } else {
+    res.status(403).send('403, You are not allowed to be here, try and log in ?');
+  }
+});
+
+app.get('/',function(req,res){
+  sess = req.session;
+  if(sess.username) {
+    res.sendFile('views/pages/index.html', { root: __dirname })
+  } else {
+      res.redirect('/login');
+  }
+});
+
+app.post('/login',function(req,res){
+  sess = req.session;
+
   fs.readFile('widgets.json', 'utf8', function readFileCallback(err, data){
     if (err){
         console.log(err);
     } else {
-    obj = JSON.parse(data);
-    obj.widgets.push(widget);
-    json = JSON.stringify(obj);
-    fs.writeFile('widgets.json', json, 'utf8');
+      obj = JSON.parse(data);
+      if (obj[req.body.username]) {
+        sess.username = req.body.username;
+        res.status(200).json({success:1, message:""});
+      } else if (obj[req.body.username] && obj[req.body.username].password != req.body.password) {
+        res.status(200).json({success:0, message:"Wrong password"});        
+      } else {
+        res.status(200).json({success:0, message:"User doesn't exist"});
+      }
   }});
+});
+
+app.post('/register',function(req,res){
+  sess = req.session;
+
+  sess.username = req.body.username;
+  fs.readFile('widgets.json', 'utf8', function readFileCallback(err, data){
+    if (err){
+        console.log(err);
+    } else {
+      obj = JSON.parse(data);
+      if (obj[req.body.username]) {
+        res.status(200).json({success:0, message:"Username taken"});
+      } else if (req.body.password.length < 6) {
+        res.status(200).json({success:0, message:"Password is to short (6 characters required)"});
+      } else {
+        obj[req.body.username] = {password: req.body.password, widgets: []};
+        json = JSON.stringify(obj);
+        fs.writeFile('widgets.json', json, 'utf8');
+        res.status(200).json({success:1, message:"User created successfuly, please login"});
+      }
+    }});
+});
+
+app.get('/deleteallusers',function(req,res){
+  sess = req.session;
+
+  if (sess.username == "admin") {
+    fs.readFile('widgets.json', 'utf8', function readFileCallback(err, data){
+      if (err){
+          console.log(err);
+      } else {
+        obj = JSON.parse(data);
+        Object.keys(obj).forEach(function(key) {
+          var val = obj[key];
+          if (key != "admin") {
+            delete obj[key]
+          }
+        });
+        json = JSON.stringify(obj);
+        fs.writeFile('widgets.json', json, 'utf8');
+        res.status(200).redirect("/"); 
+      }
+    });
+  } else {
+    res.status(403).send('403, You are not allowed to be here, try and log in ?');
+  }
+});
+
+
+app.get('/login',function(req,res){
+  sess = req.session;
+  if (sess.username) {
+    res.redirect('/');
+  } else {
+    res.sendFile('views/pages/login.html', { root: __dirname })    
+  }
+});
+
+app.get('/logout',function(req,res){
+  req.session.destroy(function(err) {
+    if(err) {
+      console.log(err);
+    } else {
+      res.redirect('/login');
+    }
+  });
 });
 
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`));

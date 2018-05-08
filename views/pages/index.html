@@ -40,7 +40,7 @@
                 switch($("#widgetName").val()) {
                     case "Bourse":
                         startLoading();
-                        var consumed = $.getJSON("/stockmarket", function() {
+                        var stock = $.getJSON("/stockmarket", function() {
                         })
                         .done(function(data) {
                             console.log(data)
@@ -70,7 +70,7 @@
                         break;
                     case "Coinmarketcap":
                         startLoading();
-                        var consumed = $.getJSON("/coinmarketcap", function() {
+                        var crypto = $.getJSON("/coinmarketcap", function() {
                         })
                         .done(function(data) {
                             console.log(data)
@@ -100,7 +100,7 @@
                         break;
                     case "Steam":
                         startLoading();                    
-                        var consumed = $.getJSON("/steam", function() {
+                        var game = $.getJSON("/steam", function() {
                         })
                         .done(function(data) {
                             console.log(data)
@@ -133,7 +133,7 @@
                             if ($("#paramlabel").val() == "")
                                 return;
                             startLoading();
-                            var consumed = $.getJSON("/allocinesearch/" + $("#paramlabel").val(), function() {
+                            var movie = $.getJSON("/allocinesearch/" + $("#paramlabel").val(), function() {
                             })
                             .done(function(data) {
                                 console.log(data)
@@ -224,6 +224,14 @@
 <input id="param" type="hidden">
 <button id="submit" onclick="labelToParam()">Ajouter</button>
 <span id="paramerror" style="display: none; color: red;">Choisir une option dans la liste</span>
+
+<form id="logout" action="/logout" style="display: inline-block; float: right;">
+    <input type="submit" value="Logout" />
+</form>
+
+<form id="resetwidgets" action="/resetwidgets" style="display: inline-block; float: right; padding-right: 10px;">
+    <input type="submit" value="Reset widgets" style="background-color: #ff00009c;" />
+</form>
 
 </div>
 <div id="root">
