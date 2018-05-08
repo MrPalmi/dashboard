@@ -16,6 +16,13 @@ html {
     width: 100%;
 }
 
+#paramlabel {
+    background-image: none;
+    background-size: 15px 15px;
+    background-position:right center;
+    background-repeat: no-repeat;
+}
+
 h1 {
     text-align: center;
     padding: 1.5rem 2.5rem;

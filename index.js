@@ -5,7 +5,7 @@ const request = require('request');
 const allocine = require('allocine-api');
 const SteamApi = require('steam-api');
 const bodyParser = require("body-parser");
-
+const fs = require('fs');
 
 var app = express();
 
@@ -187,13 +187,26 @@ app.get("/subreddit/:id", function(req, res) {
 var widgets = []
 
 app.get("/widgets/", function(req, res) {
-  console.log("get widgets");
-  res.json(widgets);
+  fs.readFile('widgets.json', 'utf8', function readFileCallback(err, data){
+    if (err){
+        console.log(err);
+    } else {
+    obj = JSON.parse(data); //now it an object
+    res.json(JSON.parse(JSON.stringify(obj.widgets)));
+  }});
 });
 
 app.get("/resetwidgets/", function(req, res) {
-  widgets = [];
-  res.status(200);
+  fs.readFile('widgets.json', 'utf8', function readFileCallback(err, data){
+    if (err){
+        console.log(err);
+    } else {
+    obj = JSON.parse(data);
+    obj.widgets = []
+    json = JSON.stringify(obj);
+    fs.writeFile('widgets.json', json, 'utf8');
+  }});
+  res.status(200).json({});
 });
 
 app.post("/widgets/", function (req, res) {
@@ -202,12 +215,20 @@ app.post("/widgets/", function (req, res) {
   console.log("NAME : " + req.body.name);
   console.log("URL : " + req.body.url);
   console.log("PARAM :" + req.body.param);
-  var data = {
+  var widget = {
     name: req.body.name,
     url: req.body.url,
     param: req.body.param
   };
-  widgets.push(data);
+  fs.readFile('widgets.json', 'utf8', function readFileCallback(err, data){
+    if (err){
+        console.log(err);
+    } else {
+    obj = JSON.parse(data);
+    obj.widgets.push(widget);
+    json = JSON.stringify(obj);
+    fs.writeFile('widgets.json', json, 'utf8');
+  }});
 });
 
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`));
