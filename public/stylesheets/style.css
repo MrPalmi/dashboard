@@ -54,9 +54,10 @@ p {
     background: white;
     box-shadow: 2px 4px 25px rgba(0, 0, 0, .1);
     border-radius: 12px;
-    overflow: hidden;
+    overflow: auto;
     width: 23.25%;
     min-height: 250px;
+    max-height: 368px;
     text-align: center;
 }
 

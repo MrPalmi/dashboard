@@ -39,6 +39,11 @@ const widget = [
         'url': '/redditsubcount/',
         'param': '',
     },
+    {
+        'name': 'Subreddit',
+        'url': '/subreddit/',
+        'param': '',
+    }
 ];
 
 
@@ -86,7 +91,7 @@ function addHtmlWidgetStart (myData) {
     request.onload = function () {
         let data = JSON.parse(this.response);
 
-        if (data.name === 'Google Map') {
+        if (myData.name === 'Google Map') {
             latlong[0] = data.lat;
             latlong[1] = data.lng;
             const div = document.createElement('div');
@@ -98,6 +103,30 @@ function addHtmlWidgetStart (myData) {
             card.appendChild(div);
             card.appendChild(script1);
             card.appendChild(script2);
+        }
+        else if (myData.name === 'Allociné') {
+            let array = formatAllociné(data);
+            const div = document.createElement('div');
+            for (let i = 0; array[i]; i++) {
+                const p = document.createElement('p');
+                p.textContent = array[i].title + ' { ' + array[i].time + ' }';
+                div.appendChild(p);
+            }
+            card.appendChild(div);
+        }
+        else if (myData.name === 'Subreddit') {
+            const div = document.createElement('div');
+            div.setAttribute('style', 'overflow: auto');
+            for (let i = 0; data.data.children[i]; i++) {
+                const p = document.createElement('p');
+                const a = document.createElement('a');
+                a.textContent = data.data.children[i].data.title;
+                a.setAttribute('href', 'https://www.reddit.com/' + data.data.children[i].data.permalink);
+                a.setAttribute('target', '_blank');
+                p.appendChild(a);
+                div.appendChild(p);
+            }
+            card.appendChild(div);
         }
         else {
             const p = document.createElement('p');
@@ -236,6 +265,31 @@ function addHtmlWidget (index) {
                 card.appendChild(script2);
                 map++;
             }
+            else if (index === 5) {
+                let array = formatAllociné(data);
+                const div = document.createElement('div');
+                div.setAttribute('style', 'overflow: auto');
+                for (let i = 0; array[i]; i++) {
+                    const p = document.createElement('p');
+                    p.textContent = array[i].title + ' { ' + array[i].time + ' }';
+                    div.appendChild(p);
+                }
+                card.appendChild(div);
+            }
+            else if (index === 8) {
+                const div = document.createElement('div');
+                div.setAttribute('style', 'overflow: auto');
+                for (let i = 0; data.data.children[i]; i++) {
+                    const p = document.createElement('p');
+                    const a = document.createElement('a');
+                    a.textContent = data.data.children[i].data.title;
+                    a.setAttribute('href', 'https://www.reddit.com/' + data.data.children[i].data.permalink);
+                    a.setAttribute('target', '_blank');
+                    p.appendChild(a);
+                    div.appendChild(p);
+                }
+                card.appendChild(div);
+            }
             else {
                 const p = document.createElement('p');
                 p.setAttribute('id', 'p' + i);
@@ -285,7 +339,6 @@ function formatData(index, data){
             p = 'Il y a actuellement ' + data +  ' joueurs connectés à ' + widget[index].param + '.';
             break;
         case 5:
-            formatAllociné(data);
             break;
         case 6:
             p = 'La valeur du ' + data.data.name + ' est de ' + data.data.quotes.USD.price + '$.';
@@ -303,13 +356,12 @@ function formatData(index, data){
 
 
 function formatAllociné(data){
-    var date = new Date();
-    var array = []
-    console.log("=================");
-    var month = date.getMonth() + 1;
-    var day = date.getDate() + 1;
-    var year = date.getFullYear();
-    var yet = 0;
+    let date = new Date();
+    let array = [];
+    let month = date.getMonth() + 1;
+    let day = date.getDate() + 1;
+    let year = date.getFullYear();
+    let yet = 0;
     data.feed.theaterShowtimes[0].movieShowtimes.forEach(function (element) {;
         yet = 0;
         if (year == parseInt(element.scr[0].d.slice(0, 4)) &&
@@ -324,7 +376,7 @@ function formatAllociné(data){
             );
             if (yet == 0)
             {
-                var elem = new Object();
+                let elem = new Object();
                 elem.title = element.onShow.movie.title;
                 elem.time = element.scr[0].t[0].$;
                 array.push(elem)
@@ -332,6 +384,5 @@ function formatAllociné(data){
         }
         }
     );
-    console.log(array);
-    console.log("=================");
+    return array;
 }

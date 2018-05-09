@@ -222,15 +222,15 @@
 </select>
 <input id="paramlabel" type="text" placeholder="Paramètre du Widget">
 <input id="param" type="hidden">
-<button id="submit" onclick="labelToParam()">Ajouter</button>
+<button id="submit" onclick="labelToParam()" >Ajouter</button>
 <span id="paramerror" style="display: none; color: red;">Choisir une option dans la liste</span>
 
 <form id="logout" action="/logout" style="display: inline-block; float: right;">
-    <input type="submit" value="Logout" />
+    <input class="login100-form-btn" type="submit" value="Logout" />
 </form>
 
 <form id="resetwidgets" action="/resetwidgets" style="display: inline-block; float: right; padding-right: 10px;">
-    <input type="submit" value="Reset widgets" style="background-color: #ff00009c;" />
+    <input class="login100-form-btn" type="submit" value="Reset widgets" style="background-color: #ff00009c;" />
 </form>
 
 </div>
