@@ -61,8 +61,8 @@ let firstRequest = new XMLHttpRequest();
 firstRequest.open('GET', '/widgets');
 firstRequest.onload = function () {
     let data = JSON.parse(this.response);
-    for (let i = 0; data[i] ; i++) {
-        if (data[i].name === 'Google Map'){
+    for (let i = 0; data[i]; i++) {
+        if (data[i].name === 'Google Map') {
             console.log('too much map');
         }
         else {
@@ -73,7 +73,7 @@ firstRequest.onload = function () {
 firstRequest.send();
 
 
-function addHtmlWidgetStart (myData) {
+function addHtmlWidgetStart(myData) {
     let url = '';
     url = myData.url + myData.param;
 
@@ -139,12 +139,12 @@ function addHtmlWidgetStart (myData) {
     i++;
 }
 
-function formatDataStart(data, myData){
+function formatDataStart(data, myData) {
     let p = '';
     switch (myData.name) {
         case 'Météo':
             let temps = '';
-            switch (data.weather[0].main){
+            switch (data.weather[0].main) {
                 case 'Clouds':
                     temps = 'nuageux';
                     break;
@@ -162,7 +162,7 @@ function formatDataStart(data, myData){
             p = 'A ' + myData.param + ' il fait actuellement ' + data.main.temp + '°C et le temps est ' + temps + '.';
             break;
         case 'Bourse':
-            p = 'Le cours de l\'action ' + myData.param + ' est actuellement de '+ data + '$.';
+            p = 'Le cours de l\'action ' + myData.param + ' est actuellement de ' + data + '$.';
             break;
         case 'Date/Heure':
             let array = data.formatted.split(' ');
@@ -173,7 +173,7 @@ function formatDataStart(data, myData){
             /* google map*/
             break;
         case 'Steam':
-            p = 'Il y a actuellement ' + data +  ' joueurs connectés à ' + myData.param + '.';
+            p = 'Il y a actuellement ' + data + ' joueurs connectés à ' + myData.param + '.';
             break;
         case 'Allociné':
             formatAllociné(data)
@@ -199,7 +199,7 @@ function formatDataStart(data, myData){
 
 
 
-function addWidget(){
+function addWidget() {
     let selected = document.getElementById('widgetName');
     let param = document.getElementById('param');
     if (selected.options[selected.selectedIndex].value - 1 != 3) {
@@ -211,7 +211,7 @@ function addWidget(){
             });
         }
     }
-    if (selected.options[selected.selectedIndex].value - 1 === 3 && map != 0){
+    if (selected.options[selected.selectedIndex].value - 1 === 3 && map != 0) {
         console.log('too much map');
     }
     else {
@@ -227,8 +227,8 @@ function addWidget(){
 }
 
 let i = 0;
-function addHtmlWidget (index) {
-    if (index === 3 && map != 0){
+function addHtmlWidget(index) {
+    if (index === 3 && map != 0) {
         console.log('too much map');
     }
     else {
@@ -302,12 +302,12 @@ function addHtmlWidget (index) {
     }
 }
 
-function formatData(index, data){
+function formatData(index, data) {
     let p = '';
     switch (index) {
         case 0:
             let temps = '';
-            switch (data.weather[0].main){
+            switch (data.weather[0].main) {
                 case 'Clouds':
                     temps = 'nuageux';
                     break;
@@ -325,7 +325,7 @@ function formatData(index, data){
             p = 'A ' + widget[index].param + ' il fait actuellement ' + data.main.temp + '°C et le temps est ' + temps + '.';
             break;
         case 1:
-            p = 'Le cours de l\'action ' + widget[index].param + ' est actuellement de '+ data + '$.';
+            p = 'Le cours de l\'action ' + widget[index].param + ' est actuellement de ' + data + '$.';
             break;
         case 2:
             let array = data.formatted.split(' ');
@@ -336,7 +336,7 @@ function formatData(index, data){
             /* google map*/
             break;
         case 4:
-            p = 'Il y a actuellement ' + data +  ' joueurs connectés à ' + widget[index].param + '.';
+            p = 'Il y a actuellement ' + data + ' joueurs connectés à ' + widget[index].param + '.';
             break;
         case 5:
             break;
@@ -355,34 +355,60 @@ function formatData(index, data){
 }
 
 
-function formatAllociné(data){
+function formatAllociné(data) {
     let date = new Date();
     let array = [];
-    let month = date.getMonth() + 1;
-    let day = date.getDate() + 1;
+    let month = date.getMonth();
+    let day = date.getDate();
     let year = date.getFullYear();
     let yet = 0;
-    data.feed.theaterShowtimes[0].movieShowtimes.forEach(function (element) {;
-        yet = 0;
-        if (year == parseInt(element.scr[0].d.slice(0, 4)) &&
-            day == parseInt(element.scr[0].d.slice(8, 10)) &&
-            month == parseInt(element.scr[0].d.slice(5,7))){
-                array.forEach(function(aElement) {
-                    if (aElement.title == element.onShow.movie.title){
-                        aElement.time += '/' + element.scr[0].t[0].$
-                        yet = 1;
+    var monthTab = ['janvier', 'février', 'mars', 'avril',
+        'mai', 'juin', 'juillet', 'août',
+        'septembre', 'octobre', 'novembre', 'décembre']
+
+    data.feed.theaterShowtimes[0].movieShowtimes.forEach(function (element) {
+        var display = element.display
+        var seances = display.split("\r\n");
+        seances.forEach(function (seance) {
+            //On va séparer les heures de la data
+            var sep1 = seance.split(":");
+
+            //D'abord la date
+            var date = sep1[0].split("du")[1].trim();
+            var date = date.split(" ");
+            var nameDay = date[0];
+            var dayNumber = parseInt(date[1]);
+            var seanceMonth = date[2];
+            var seanceYear = parseInt(date[3]);
+            //Ensuite les séances dispo
+            sep1.splice(0, 1)
+            sep1 = sep1.join(':').trim();
+            hours = sep1.split(', ');
+            //TADAM
+            hours.forEach(function (hour) {
+                //              console.log(hour);
+                yet = 0;
+                if (monthTab[month] === seanceMonth &&
+                    dayNumber === day &&
+                    year === seanceYear) {
+
+                    array.forEach(function (aElement) {
+                        if (aElement.title == element.onShow.movie.title) {
+                            aElement.time += '/' + hour
+                            yet = 1;
+                        }
+                    }
+                    );
+                    if (yet == 0) {
+                        let elem = new Object();
+                        elem.title = element.onShow.movie.title;
+                        elem.time = hour;
+                        array.push(elem)
                     }
                 }
-            );
-            if (yet == 0)
-            {
-                let elem = new Object();
-                elem.title = element.onShow.movie.title;
-                elem.time = element.scr[0].t[0].$;
-                array.push(elem)
-            }
-        }
-        }
+            });
+        });
+    }
     );
     return array;
 }
