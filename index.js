@@ -34,8 +34,11 @@ app.get("/allocine/:id", function(req, res) {
   var cinema = req.params.id;
   allocine.api('showtimelist', {theaters: cinema}, function(error, results) {
     if(error) { console.log('Error : '+ error); return; }
-    res.status(200).json(results);
 
+    if (results['feed']['totalResults'] == 0)
+      res.status(200).json({"error": 1, "message": "Le cinéma n'existe pas"});
+    else
+      res.status(200).json(results);
   });
 });
 
@@ -53,9 +56,16 @@ app.get("/steam/:id", function(req, res) {
 
   var userStats = new SteamApi.UserStats('steam-api-key');
 
-  userStats.GetNumberOfCurrentPlayers(game).done(function(result){
-    res.status(200).json(result);
-  });
+  try {
+      userStats.GetNumberOfCurrentPlayers(game).done(function(result){
+        res.status(200).json(result);
+      });
+  }
+  catch(e) {
+    console.log(e);
+  // expected output: "Parameter is not a number!"
+  }
+ 
 });
 
 app.get("/steam", function(req, res) {
@@ -223,7 +233,8 @@ app.post("/widgets/", function (req, res) {
     var widget = {
       name: req.body.name,
       url: req.body.url,
-      param: req.body.param
+      param: req.body.param,
+      id: req.body.id
     };
     fs.readFile('widgets.json', 'utf8', function readFileCallback(err, data){
       if (err){
