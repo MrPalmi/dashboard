@@ -226,6 +226,7 @@ app.post("/widgets/", function (req, res) {
     console.log("NAME : " + req.body.name);
     console.log("URL : " + req.body.url);
     console.log("PARAM :" + req.body.param);
+    console.log("ID :" + req.body.id);
     var widget = {
       name: req.body.name,
       url: req.body.url,
