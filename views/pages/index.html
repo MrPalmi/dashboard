@@ -33,26 +33,21 @@
     <script type="text/javascript">
         $(document).ready(function(){
             $("#paramlabel").change(function() {
-              console.log( "Handler for .change() called : " + $("#paramlabel").val());
             });
             $("#paramlabel").focus(function() {
-                console.log('in : ' + $("#widgetName").val());
                 switch($("#widgetName").val()) {
                     case "Bourse":
                         startLoading();
                         var stock = $.getJSON("/stockmarket", function() {
                         })
                         .done(function(data) {
-                            console.log(data)
                             var vals = []
                             $.each(data, function(value, key) {
                                 if (key.name.length < 4) {
-                                    console.log(key.name  + " : SHORT");
                                 }
                                 var t = {'label': key.name, 'value':key.symbol};
                                 vals.push(t);
                             });
-                            console.log("vals: " + JSON.stringify(vals));                              
                             $("#paramlabel").autocomplete({
                                 source:vals,
                                 minLength: 3,
@@ -73,16 +68,13 @@
                         var crypto = $.getJSON("/coinmarketcap", function() {
                         })
                         .done(function(data) {
-                            console.log(data)
                             var vals = []
                             $.each(data["data"], function(value, key) {
                                 if (key.name.length < 4) {
-                                    console.log(key.name  + " : SHORT");
                                 }
                                 var t = {'label': key.name, 'value':key.id};
                                 vals.push(t);
                             });
-                            console.log("vals: " + JSON.stringify(vals));                              
                             $("#paramlabel").autocomplete({
                                 source:vals,
                                 minLength: 3,
@@ -103,16 +95,13 @@
                         var game = $.getJSON("/steam", function() {
                         })
                         .done(function(data) {
-                            console.log(data)
                             var vals = []
                             $.each(data, function(value, key) {
                                 if (key.name.length < 4) {
-                                    console.log(key.name  + " : SHORT");
                                 }
                                 var t = {'label': key.name, 'value':key.appid};
                                 vals.push(t);
                             });
-                            console.log("vals: " + JSON.stringify(vals));                              
                             $("#paramlabel").autocomplete({
                                 source:vals,
                                 minLength: 3,
@@ -136,14 +125,12 @@
                             var movie = $.getJSON("/allocinesearch/" + $("#paramlabel").val(), function() {
                             })
                             .done(function(data) {
-                                console.log(data)
                                 var vals = []
                                 if (data["feed"]["totalResults"] > 0) {
                                     $.each(data["feed"]["theater"], function(value, key) {
                                         var t = {'label': key.name + " - " + key.city, 'value':key.code};
                                         vals.push(t);
                                     });
-                                    console.log("vals: " + JSON.stringify(vals));                              
                                     $("#paramlabel").autocomplete({
                                         source:vals,
                                         minLength: 3,
@@ -170,10 +157,8 @@
                 }
             }).blur(function() {
                 $("#paramlabel").off("change paste keyup");
-                console.log('out');
             });
             $("#submit").click(function(){
-                console.log("SUBMIT");
                 $("#param").val('');
                 $("#paramlabel").val('');
             })
@@ -192,7 +177,6 @@
     }
 
     function labelToParam() {
-        console.log("labelToParam")
         var opt = $("#widgetName").val();
         if ((opt == "Bourse" || opt == "Steam" || opt == "Allociné" || opt == "Coinmarketcap") && $("#param").val() == '') {
             event.preventDefault();

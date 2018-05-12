@@ -3,46 +3,55 @@ const widget = [
         'name': 'Météo',
         'url': '/weather/',
         'param': '',
+        'id': ''
     },
     {
         'name': 'Bourse',
         'url': '/stockmarket/',
         'param': '',
+        'id': ''
     },
     {
         'name': 'Date/Heure',
         'url': '/time/',
         'param': '',
+        'id': ''
     },
     {
         'name': 'Google Map',
         'url': '/lgtandlat/',
         'param': '',
+        'id': ''
     },
     {
         'name': 'Steam',
         'url': '/steam/',
         'param': '',
+        'id': ''
     },
     {
         'name': 'Allociné',
         'url': '/allocine/',
         'param': '',
+        'id': ''
     },
     {
         'name': 'Coinmarketcap',
         'url': '/coinmarketcap/',
         'param': '',
+        'id': ''
     },
     {
         'name': 'Subreddit Subscriber',
         'url': '/redditsubcount/',
         'param': '',
+        'id': ''
     },
     {
         'name': 'Subreddit',
         'url': '/subreddit/',
         'param': '',
+        'id': ''
     }
 ];
 
@@ -66,7 +75,7 @@ firstRequest.onload = function () {
             console.log('too much map');
         }
         else {
-            addHtmlWidgetStart(data[i])
+            addHtmlWidgetStart(data[i], i)
         }
     }
 };
@@ -85,7 +94,6 @@ function addHtmlWidgetStart(myData) {
     container.appendChild(card);
     card.appendChild(h1);
 
-    let j = 0;
     let request = new XMLHttpRequest();
     request.open('GET', url);
     request.onload = function () {
@@ -130,7 +138,8 @@ function addHtmlWidgetStart(myData) {
         }
         else {
             const p = document.createElement('p');
-            p.setAttribute('id', 'p' + i);
+            p.setAttribute('id', i);
+            myData.id = i;
             p.textContent = formatDataStart(data, myData);
             card.appendChild(p);
         }
@@ -176,7 +185,7 @@ function formatDataStart(data, myData) {
             p = 'Il y a actuellement ' + data + ' joueurs connectés à ' + myData.param + '.';
             break;
         case 'Allociné':
-            formatAllociné(data)
+            formatAllociné(data);
             break;
         case 'Coinmarketcap':
             p = 'La valeur du ' + data.data.name + ' est de ' + data.data.quotes.USD.price + '$.';
@@ -219,11 +228,6 @@ function addWidget() {
         if (selected.options[selected.selectedIndex].value - 1 === 3)
             map++;
     }
-    let request = new XMLHttpRequest();
-    request.open('POST', '/widgets');
-    request.setRequestHeader('Content-type', 'application/json');
-    console.log(JSON.stringify(widget[selected.selectedIndex - 1]));
-    request.send(JSON.stringify(widget[selected.selectedIndex - 1]));
 }
 
 let i = 0;
@@ -292,11 +296,16 @@ function addHtmlWidget(index) {
             }
             else {
                 const p = document.createElement('p');
-                p.setAttribute('id', 'p' + i);
+                p.setAttribute('id', i);
                 p.textContent = formatData(index, data);
                 card.appendChild(p);
             }
         };
+        widget[index].id = i;
+        let frequest = new XMLHttpRequest();
+        frequest.open('POST', '/widgets');
+        frequest.setRequestHeader('Content-type', 'application/json');
+        frequest.send(JSON.stringify(widget[index]));
         request.send();
         i++;
     }
@@ -394,7 +403,7 @@ function formatAllociné(data) {
 
                     array.forEach(function (aElement) {
                         if (aElement.title == element.onShow.movie.title) {
-                            aElement.time += '/' + hour
+                            aElement.time += '/' + hour;
                             yet = 1;
                         }
                     }
@@ -412,3 +421,72 @@ function formatAllociné(data) {
     );
     return array;
 }
+
+function refreshData(widget) {
+    let request = new XMLHttpRequest();
+    request.open('GET', widget.url + widget.param);
+    request.onload = function () {
+        let data = JSON.parse(this.response);
+        switch (widget.name) {
+            case 'Météo':
+                let temps = '';
+                switch (data.weather[0].main) {
+                    case 'Clouds':
+                        temps = 'nuageux';
+                        break;
+                    case 'Rain':
+                        temps = 'pluvieux';
+                        break;
+                    case 'Snow':
+                        temps = 'neigeux';
+                        break;
+                    case 'Sun':
+                        temps = 'ensoleillé';
+                    default:
+                        temps = 'dégagé';
+                }
+                document.getElementById(widget.id + 1).innerHTML = 'A ' + widget.param + ' il fait actuellement ' + data.main.temp + '°C et le temps est ' + temps + '.';
+                break;
+            case 'Bourse':
+                document.getElementById(widget.id + 1).innerHTML = 'Le cours de l\'action ' + widget.param + ' est actuellement de ' + data + '$.';
+                break;
+            case 'Date/Heure':
+                let array = data.formatted.split(' ');
+                let date = array[0].split('-');
+                let p ='A ' + widget.param + ' il est actuellement ' + array[1] + ' et nous sommes le ' + date[2] + '-' + date[1] + '-' + date[0] + '.';
+                document.getElementById(widget.id + 1).innerHTML = p;
+                break;
+            case 'Google Map':
+                /* google map*/
+                break;
+            case 'Steam':
+                document.getElementById(widget.id + 1).innerHTML = 'Il y a actuellement ' + data + ' joueurs connectés à ' + widget.param + '.';
+                break;
+            case 'Allociné':
+                break;
+            case 'Coinmarketcap':
+                document.getElementById(widget.id + 1).innerHTML = 'La valeur du ' + data.data.name + ' est de ' + data.data.quotes.USD.price + '$.';
+                document.getElementById(widget.id + 1).innerHTML = 'La valeur du ' + data.data.name + ' est de ' + data.data.quotes.USD.price + '$.';
+                break;
+            case 'Subreddit Subscriber':
+                document.getElementById(widget.id + 1).innerHTML = 'Le subreddit "' + widget.param + '" possède ' + data + ' subscribers.';
+                break;
+            case 'Subreddit':
+                /* reddit 2 */
+                break
+        }
+    };
+    request.send();
+}
+
+setInterval(function refreshWeather(){
+    let Request = new XMLHttpRequest();
+    Request.open('GET', '/widgets');
+    Request.onload = function () {
+        let data = JSON.parse(this.response);
+        for (let i = 0; data[i]; i++) {
+            refreshData(data[i]);
+        }
+    };
+    Request.send();
+}, 10000);
