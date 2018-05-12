@@ -64,7 +64,7 @@ app.appendChild(container);
 
 const latlong = [];
 let map = 0;
-
+let idValue = 0;
 
 let firstRequest = new XMLHttpRequest();
 firstRequest.open('GET', '/widgets');
@@ -75,7 +75,7 @@ firstRequest.onload = function () {
             console.log('too much map');
         }
         else {
-            addHtmlWidgetStart(data[i], i)
+            addHtmlWidgetStart(data[i])
         }
     }
 };
@@ -98,106 +98,111 @@ function addHtmlWidgetStart(myData) {
     request.open('GET', url);
     request.onload = function () {
         let data = JSON.parse(this.response);
-
-        if (myData.name === 'Google Map') {
-            latlong[0] = data.lat;
-            latlong[1] = data.lng;
-            const div = document.createElement('div');
-            div.setAttribute('id', 'map');
-            const script1 = document.createElement('script');
-            script1.src = '/scripts/map.js';
-            const script2 = document.createElement('script');
-            script2.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCoXD3dN_6TPERUPESZZJCQINpj-9wH6mY&callback=initMap';
-            card.appendChild(div);
-            card.appendChild(script1);
-            card.appendChild(script2);
-        }
-        else if (myData.name === 'Allociné') {
-            let array = formatAllociné(data);
-            const div = document.createElement('div');
-            for (let i = 0; array[i]; i++) {
-                const p = document.createElement('p');
-                p.textContent = array[i].title + ' { ' + array[i].time + ' }';
-                div.appendChild(p);
-            }
-            card.appendChild(div);
-        }
-        else if (myData.name === 'Subreddit') {
-            const div = document.createElement('div');
-            div.setAttribute('style', 'overflow: auto');
-            for (let i = 0; data.data.children[i]; i++) {
-                const p = document.createElement('p');
-                const a = document.createElement('a');
-                a.textContent = data.data.children[i].data.title;
-                a.setAttribute('href', 'https://www.reddit.com/' + data.data.children[i].data.permalink);
-                a.setAttribute('target', '_blank');
-                p.appendChild(a);
-                div.appendChild(p);
-            }
-            card.appendChild(div);
-        }
-        else {
+        if (data.error){
             const p = document.createElement('p');
-            p.setAttribute('id', i);
-            myData.id = i;
-            p.textContent = formatDataStart(data, myData);
+            p.textContent = data.message;
+            p.setAttribute('id', myData.id);
             card.appendChild(p);
         }
+        else {
+            if (myData.name === 'Google Map') {
+                latlong[0] = data.lat;
+                latlong[1] = data.lng;
+                const div = document.createElement('div');
+                div.setAttribute('id', 'map');
+                const script1 = document.createElement('script');
+                script1.src = '/scripts/map.js';
+                const script2 = document.createElement('script');
+                script2.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCoXD3dN_6TPERUPESZZJCQINpj-9wH6mY&callback=initMap';
+                card.appendChild(div);
+                card.appendChild(script1);
+                card.appendChild(script2);
+            }
+            else if (myData.name === 'Allociné') {
+                let array = formatAllociné(data);
+                const div = document.createElement('div');
+                for (let i = 0; array[i]; i++) {
+                    const p = document.createElement('p');
+                    p.textContent = array[i].title + ' { ' + array[i].time + ' }';
+                    div.appendChild(p);
+                }
+                card.appendChild(div);
+            }
+            else if (myData.name === 'Subreddit') {
+                const div = document.createElement('div');
+                div.setAttribute('style', 'overflow: auto');
+                for (let i = 0; data.data.children[i]; i++) {
+                    const p = document.createElement('p');
+                    const a = document.createElement('a');
+                    a.textContent = data.data.children[i].data.title;
+                    a.setAttribute('href', 'https://www.reddit.com/' + data.data.children[i].data.permalink);
+                    a.setAttribute('target', '_blank');
+                    p.appendChild(a);
+                    div.appendChild(p);
+                }
+                card.appendChild(div);
+            }
+            else {
+                const p = document.createElement('p');
+                p.setAttribute('id', myData.id);
+                p.textContent = formatDataStart(data, myData);
+                card.appendChild(p);
+            }
+        }
+        idValue++;
     };
     request.send();
-    i++;
 }
 
 function formatDataStart(data, myData) {
     let p = '';
-    switch (myData.name) {
-        case 'Météo':
-            let temps = '';
-            switch (data.weather[0].main) {
-                case 'Clouds':
-                    temps = 'nuageux';
-                    break;
-                case 'Rain':
-                    temps = 'pluvieux';
-                    break;
-                case 'Snow':
-                    temps = 'neigeux';
-                    break;
-                case 'Sun':
-                    temps = 'ensoleillé';
-                default:
-                    temps = 'dégagé';
-            }
-            p = 'A ' + myData.param + ' il fait actuellement ' + data.main.temp + '°C et le temps est ' + temps + '.';
-            break;
-        case 'Bourse':
-            p = 'Le cours de l\'action ' + myData.param + ' est actuellement de ' + data + '$.';
-            break;
-        case 'Date/Heure':
-            let array = data.formatted.split(' ');
-            let date = array[0].split('-');
-            p = 'A ' + myData.param + ' il est actuellement ' + array[1] + ' et nous sommes le ' + date[2] + '-' + date[1] + '-' + date[0] + '.';
-            break;
-        case 'Google Map':
-            /* google map*/
-            break;
-        case 'Steam':
-            p = 'Il y a actuellement ' + data + ' joueurs connectés à ' + myData.param + '.';
-            break;
-        case 'Allociné':
-            formatAllociné(data);
-            break;
-        case 'Coinmarketcap':
-            p = 'La valeur du ' + data.data.name + ' est de ' + data.data.quotes.USD.price + '$.';
-            p = 'La valeur du ' + data.data.name + ' est de ' + data.data.quotes.USD.price + '$.';
-            break;
-        case 'Subreddit Subscriber':
-            p = 'Le subreddit "' + myData.param + '" possède ' + data + ' subscribers.';
-            break;
-        case 'subreddit':
-            /* reddit 2 */
-            break;
-    }
+        switch (myData.name) {
+            case 'Météo':
+                let temps = '';
+                switch (data.weather[0].main) {
+                    case 'Clouds':
+                        temps = 'nuageux';
+                        break;
+                    case 'Rain':
+                        temps = 'pluvieux';
+                        break;
+                    case 'Snow':
+                        temps = 'neigeux';
+                        break;
+                    case 'Sun':
+                        temps = 'ensoleillé';
+                    default:
+                        temps = 'dégagé';
+                }
+                p = 'A ' + myData.param + ' il fait actuellement ' + data.main.temp + '°C et le temps est ' + temps + '.';
+                break;
+            case 'Bourse':
+                p = 'Le cours de l\'action ' + myData.param + ' est actuellement de ' + data + '$.';
+                break;
+            case 'Date/Heure':
+                let array = data.formatted.split(' ');
+                let date = array[0].split('-');
+                p = 'A ' + myData.param + ' il est actuellement ' + array[1] + ' et nous sommes le ' + date[2] + '-' + date[1] + '-' + date[0] + '.';
+                break;
+            case 'Google Map':
+                /* google map*/
+                break;
+            case 'Steam':
+                p = 'Il y a actuellement ' + data + ' joueurs connectés à ' + myData.param + '.';
+                break;
+            case 'Allociné':
+                break;
+            case 'Coinmarketcap':
+                p = 'La valeur du ' + data.data.name + ' est de ' + data.data.quotes.USD.price + '$.';
+                p = 'La valeur du ' + data.data.name + ' est de ' + data.data.quotes.USD.price + '$.';
+                break;
+            case 'Subreddit Subscriber':
+                p = 'Le subreddit "' + myData.param + '" possède ' + data + ' subscribers.';
+                break;
+            case 'subreddit':
+                /* reddit 2 */
+                break;
+        }
     return p;
 }
 
@@ -214,8 +219,14 @@ function addWidget() {
     if (selected.options[selected.selectedIndex].value - 1 != 3) {
         if (selected.options[selected.selectedIndex].value && param.value) {
             widget.forEach(function (elem) {
-                if (elem.name === selected.options[selected.selectedIndex].value) {
-                    elem.param = param.value;
+                if (elem.name === 'Steam'){
+                    let labelparam = document.getElementById('paramlabel');
+                    elem.param = labelparam.value;
+                }
+                else {
+                    if (elem.name === selected.options[selected.selectedIndex].value) {
+                        elem.param = param.value;
+                    }
                 }
             });
         }
@@ -225,12 +236,12 @@ function addWidget() {
     }
     else {
         addHtmlWidget(selected.selectedIndex - 1);
+        idValue++;
         if (selected.options[selected.selectedIndex].value - 1 === 3)
             map++;
     }
 }
 
-let i = 0;
 function addHtmlWidget(index) {
     if (index === 3 && map != 0) {
         console.log('too much map');
@@ -252,114 +263,122 @@ function addHtmlWidget(index) {
         request.open('GET', url);
         request.onload = function () {
             let data = JSON.parse(this.response);
-
-            if (index === 3 && map === 0) {
-                latlong[0] = data.lat;
-                latlong[1] = data.lng;
-                const div = document.createElement('div');
-                div.setAttribute('id', 'map');
-                const script1 = document.createElement('script');
-                script1.src = 'scripts/map.js';
-                script1.async = false;
-                const script2 = document.createElement('script');
-                script2.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCoXD3dN_6TPERUPESZZJCQINpj-9wH6mY&callback=initMap';
-                script2.async = false;
-                card.appendChild(div);
-                card.appendChild(script1);
-                card.appendChild(script2);
-                map++;
-            }
-            else if (index === 5) {
-                let array = formatAllociné(data);
-                const div = document.createElement('div');
-                div.setAttribute('style', 'overflow: auto');
-                for (let i = 0; array[i]; i++) {
-                    const p = document.createElement('p');
-                    p.textContent = array[i].title + ' { ' + array[i].time + ' }';
-                    div.appendChild(p);
-                }
-                card.appendChild(div);
-            }
-            else if (index === 8) {
-                const div = document.createElement('div');
-                div.setAttribute('style', 'overflow: auto');
-                for (let i = 0; data.data.children[i]; i++) {
-                    const p = document.createElement('p');
-                    const a = document.createElement('a');
-                    a.textContent = data.data.children[i].data.title;
-                    a.setAttribute('href', 'https://www.reddit.com/' + data.data.children[i].data.permalink);
-                    a.setAttribute('target', '_blank');
-                    p.appendChild(a);
-                    div.appendChild(p);
-                }
-                card.appendChild(div);
-            }
-            else {
+            if (data.error) {
                 const p = document.createElement('p');
-                p.setAttribute('id', i);
-                p.textContent = formatData(index, data);
+                p.textContent = data.message;
+                p.setAttribute('id', idValue);
                 card.appendChild(p);
             }
+            else {
+                if (index === 3 && map === 0) {
+                    latlong[0] = data.lat;
+                    latlong[1] = data.lng;
+                    const div = document.createElement('div');
+                    div.setAttribute('id', 'map');
+                    const script1 = document.createElement('script');
+                    script1.src = 'scripts/map.js';
+                    script1.async = false;
+                    const script2 = document.createElement('script');
+                    script2.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCoXD3dN_6TPERUPESZZJCQINpj-9wH6mY&callback=initMap';
+                    script2.async = false;
+                    card.appendChild(div);
+                    card.appendChild(script1);
+                    card.appendChild(script2);
+                    map++;
+                }
+                else if (index === 5) {
+                    let array = formatAllociné(data);
+                    const div = document.createElement('div');
+                    div.setAttribute('style', 'overflow: auto');
+                    for (let i = 0; array[i]; i++) {
+                        const p = document.createElement('p');
+                        p.textContent = array[i].title + ' { ' + array[i].time + ' }';
+                        div.appendChild(p);
+                    }
+                    card.appendChild(div);
+                }
+                else if (index === 8) {
+                    const div = document.createElement('div');
+                    div.setAttribute('style', 'overflow: auto');
+                    for (let i = 0; data.data.children[i]; i++) {
+                        const p = document.createElement('p');
+                        const a = document.createElement('a');
+                        a.textContent = data.data.children[i].data.title;
+                        a.setAttribute('href', 'https://www.reddit.com/' + data.data.children[i].data.permalink);
+                        a.setAttribute('target', '_blank');
+                        p.appendChild(a);
+                        div.appendChild(p);
+                    }
+                    card.appendChild(div);
+                }
+                else {
+                    const p = document.createElement('p');
+                    p.setAttribute('id', idValue - 1);
+                    p.textContent = formatData(index, data);
+                    card.appendChild(p);
+                }
+            }
         };
-        widget[index].id = i;
+        widget[index].id = idValue;
         let frequest = new XMLHttpRequest();
         frequest.open('POST', '/widgets');
         frequest.setRequestHeader('Content-type', 'application/json');
         frequest.send(JSON.stringify(widget[index]));
         request.send();
-        i++;
+        location.reload();
     }
 }
 
 function formatData(index, data) {
     let p = '';
-    switch (index) {
-        case 0:
-            let temps = '';
-            switch (data.weather[0].main) {
-                case 'Clouds':
-                    temps = 'nuageux';
-                    break;
-                case 'Rain':
-                    temps = 'pluvieux';
-                    break;
-                case 'Snow':
-                    temps = 'neigeux';
-                    break;
-                case 'Sun':
-                    temps = 'ensoleillé';
-                default:
-                    temps = 'dégagé';
-            }
-            p = 'A ' + widget[index].param + ' il fait actuellement ' + data.main.temp + '°C et le temps est ' + temps + '.';
-            break;
-        case 1:
-            p = 'Le cours de l\'action ' + widget[index].param + ' est actuellement de ' + data + '$.';
-            break;
-        case 2:
-            let array = data.formatted.split(' ');
-            let date = array[0].split('-');
-            p = 'A ' + widget[index].param + ' il est actuellement ' + array[1] + ' et nous sommes le ' + date[2] + '-' + date[1] + '-' + date[0] + '.';
-            break;
-        case 3:
-            /* google map*/
-            break;
-        case 4:
-            p = 'Il y a actuellement ' + data + ' joueurs connectés à ' + widget[index].param + '.';
-            break;
-        case 5:
-            break;
-        case 6:
-            p = 'La valeur du ' + data.data.name + ' est de ' + data.data.quotes.USD.price + '$.';
-            p = 'La valeur du ' + data.data.name + ' est de ' + data.data.quotes.USD.price + '$.';
-            break;
-        case 7:
-            p = 'Le subreddit "' + widget[index].param + '" possède ' + data + ' subscribers.';
-            break;
-        case 8:
-            /* reddit 2 */
-            break;
-    }
+
+        switch (index) {
+            case 0:
+                let temps = '';
+                switch (data.weather[0].main) {
+                    case 'Clouds':
+                        temps = 'nuageux';
+                        break;
+                    case 'Rain':
+                        temps = 'pluvieux';
+                        break;
+                    case 'Snow':
+                        temps = 'neigeux';
+                        break;
+                    case 'Sun':
+                        temps = 'ensoleillé';
+                    default:
+                        temps = 'dégagé';
+                }
+                p = 'A ' + widget[index].param + ' il fait actuellement ' + data.main.temp + '°C et le temps est ' + temps + '.';
+                break;
+            case 1:
+                p = 'Le cours de l\'action ' + widget[index].param + ' est actuellement de ' + data + '$.';
+                break;
+            case 2:
+                let array = data.formatted.split(' ');
+                let date = array[0].split('-');
+                p = 'A ' + widget[index].param + ' il est actuellement ' + array[1] + ' et nous sommes le ' + date[2] + '-' + date[1] + '-' + date[0] + '.';
+                break;
+            case 3:
+                /* google map*/
+                break;
+            case 4:
+                p = 'Il y a actuellement ' + data + ' joueurs connectés à ' + widget[index].param + '.';
+                break;
+            case 5:
+                break;
+            case 6:
+                p = 'La valeur du ' + data.data.name + ' est de ' + data.data.quotes.USD.price + '$.';
+                p = 'La valeur du ' + data.data.name + ' est de ' + data.data.quotes.USD.price + '$.';
+                break;
+            case 7:
+                p = 'Le subreddit "' + widget[index].param + '" possède ' + data + ' subscribers.';
+                break;
+            case 8:
+                /* reddit 2 */
+                break;
+        }
     return p;
 }
 
@@ -427,53 +446,57 @@ function refreshData(widget) {
     request.open('GET', widget.url + widget.param);
     request.onload = function () {
         let data = JSON.parse(this.response);
-        switch (widget.name) {
-            case 'Météo':
-                let temps = '';
-                switch (data.weather[0].main) {
-                    case 'Clouds':
-                        temps = 'nuageux';
-                        break;
-                    case 'Rain':
-                        temps = 'pluvieux';
-                        break;
-                    case 'Snow':
-                        temps = 'neigeux';
-                        break;
-                    case 'Sun':
-                        temps = 'ensoleillé';
-                    default:
-                        temps = 'dégagé';
-                }
-                document.getElementById(widget.id + 1).innerHTML = 'A ' + widget.param + ' il fait actuellement ' + data.main.temp + '°C et le temps est ' + temps + '.';
-                break;
-            case 'Bourse':
-                document.getElementById(widget.id + 1).innerHTML = 'Le cours de l\'action ' + widget.param + ' est actuellement de ' + data + '$.';
-                break;
-            case 'Date/Heure':
-                let array = data.formatted.split(' ');
-                let date = array[0].split('-');
-                let p ='A ' + widget.param + ' il est actuellement ' + array[1] + ' et nous sommes le ' + date[2] + '-' + date[1] + '-' + date[0] + '.';
-                document.getElementById(widget.id + 1).innerHTML = p;
-                break;
-            case 'Google Map':
-                /* google map*/
-                break;
-            case 'Steam':
-                document.getElementById(widget.id + 1).innerHTML = 'Il y a actuellement ' + data + ' joueurs connectés à ' + widget.param + '.';
-                break;
-            case 'Allociné':
-                break;
-            case 'Coinmarketcap':
-                document.getElementById(widget.id + 1).innerHTML = 'La valeur du ' + data.data.name + ' est de ' + data.data.quotes.USD.price + '$.';
-                document.getElementById(widget.id + 1).innerHTML = 'La valeur du ' + data.data.name + ' est de ' + data.data.quotes.USD.price + '$.';
-                break;
-            case 'Subreddit Subscriber':
-                document.getElementById(widget.id + 1).innerHTML = 'Le subreddit "' + widget.param + '" possède ' + data + ' subscribers.';
-                break;
-            case 'Subreddit':
-                /* reddit 2 */
-                break
+        if (data.error) {
+            document.getElementById(widget.id - 1).innerHTML = data.message;
+        }
+        else {
+            switch (widget.name) {
+                case 'Météo':
+                    let temps = '';
+                    switch (data.weather[0].main) {
+                        case 'Clouds':
+                            temps = 'nuageux';
+                            break;
+                        case 'Rain':
+                            temps = 'pluvieux';
+                            break;
+                        case 'Snow':
+                            temps = 'neigeux';
+                            break;
+                        case 'Sun':
+                            temps = 'ensoleillé';
+                        default:
+                            temps = 'dégagé';
+                    }
+                    document.getElementById(widget.id).innerHTML = 'A ' + widget.param + ' il fait actuellement ' + data.main.temp + '°C et le temps est ' + temps + '.';
+                    break;
+                case 'Bourse':
+                    document.getElementById(widget.id).innerHTML = 'Le cours de l\'action ' + widget.param + ' est actuellement de ' + data + '$.';
+                    break;
+                case 'Date/Heure':
+                    let array = data.formatted.split(' ');
+                    let date = array[0].split('-');
+                    document.getElementById(widget.id).innerHTML = 'A ' + widget.param + ' il est actuellement ' + array[1] + ' et nous sommes le ' + date[2] + '-' + date[1] + '-' + date[0] + '.';
+                    break;
+                case 'Google Map':
+                    /* google map*/
+                    break;
+                case 'Steam':
+                    document.getElementById(widget.id).innerHTML = 'Il y a actuellement ' + data + ' joueurs connectés à ' + widget.param + '.';
+                    break;
+                case 'Allociné':
+                    break;
+                case 'Coinmarketcap':
+                    document.getElementById(widget.id).innerHTML = 'La valeur du ' + data.data.name + ' est de ' + data.data.quotes.USD.price + '$.';
+                    document.getElementById(widget.id).innerHTML = 'La valeur du ' + data.data.name + ' est de ' + data.data.quotes.USD.price + '$.';
+                    break;
+                case 'Subreddit Subscriber':
+                    document.getElementById(widget.id).innerHTML = 'Le subreddit "' + widget.param + '" possède ' + data + ' subscribers.';
+                    break;
+                case 'Subreddit':
+                    /* reddit 2 */
+                    break
+            }
         }
     };
     request.send();
