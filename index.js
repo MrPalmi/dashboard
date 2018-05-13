@@ -310,7 +310,7 @@ app.post('/login',function(req,res){
         console.log(err);
     } else {
       obj = JSON.parse(data);
-      if (obj[req.body.username]) {
+      if (obj[req.body.username] && obj[req.body.username].password == req.body.password) {
         sess.username = req.body.username;
         res.status(200).json({success:1, message:""});
       } else if (obj[req.body.username] && obj[req.body.username].password != req.body.password) {
