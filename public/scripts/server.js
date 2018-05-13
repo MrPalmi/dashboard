@@ -71,12 +71,7 @@ firstRequest.open('GET', '/widgets');
 firstRequest.onload = function () {
     let data = JSON.parse(this.response);
     for (let i = 0; data[i]; i++) {
-        if (data[i].name === 'Google Map') {
-            console.log('too much map');
-        }
-        else {
-            addHtmlWidgetStart(data[i])
-        }
+        addHtmlWidgetStart(data[i])
     }
 };
 firstRequest.send();

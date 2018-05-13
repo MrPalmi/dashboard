@@ -21,8 +21,8 @@
       <file leaf-file-name="server.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/public/scripts/server.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="129">
-              <caret line="449" column="45" lean-forward="true" selection-start-line="449" selection-start-column="45" selection-end-line="449" selection-end-column="45" />
+            <state relative-caret-position="427">
+              <caret line="82" lean-forward="true" selection-start-line="82" selection-end-line="82" />
             </state>
           </provider>
         </entry>
@@ -31,7 +31,7 @@
         <entry file="file://$PROJECT_DIR$/widgets.json">
           <provider selected="true" editor-type-id="text-editor">
             <state>
-              <caret column="175" lean-forward="true" selection-start-column="175" selection-end-column="175" />
+              <caret column="118" lean-forward="true" selection-start-column="118" selection-end-column="118" />
             </state>
           </provider>
         </entry>
@@ -216,12 +216,13 @@
       <workItem from="1525981389395" duration="672000" />
       <workItem from="1526150428082" duration="17466000" />
       <workItem from="1526168882085" duration="2000" />
-      <workItem from="1526169178353" duration="580000" />
+      <workItem from="1526169178353" duration="1567000" />
+      <workItem from="1526235127416" duration="211000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="71735000" />
+    <option name="totallyTimeSpent" value="72933000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -526,18 +527,8 @@
     <entry file="file://$PROJECT_DIR$/front/server.js" />
     <entry file="file://$PROJECT_DIR$/front/server.js" />
     <entry file="file://$PROJECT_DIR$/front/style.css" />
-    <entry file="file://$USER_HOME$/AppData/Local/Temp/Rar$DRa17196.27044/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="26" column="19" lean-forward="true" selection-start-line="26" selection-start-column="19" selection-end-line="26" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Temp/Rar$DRa17196.27653/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-994" />
-      </provider>
-    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/Rar$DRa17196.27044/index.html" />
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/Rar$DRa17196.27653/index.html" />
     <entry file="file://$PROJECT_DIR$/lol.html" />
     <entry file="file://$PROJECT_DIR$/public/scripts/map.js">
       <provider selected="true" editor-type-id="text-editor">
@@ -598,14 +589,14 @@
     <entry file="file://$PROJECT_DIR$/widgets.json">
       <provider selected="true" editor-type-id="text-editor">
         <state>
-          <caret column="175" lean-forward="true" selection-start-column="175" selection-end-column="175" />
+          <caret column="118" lean-forward="true" selection-start-column="118" selection-end-column="118" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/public/scripts/server.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="129">
-          <caret line="449" column="45" lean-forward="true" selection-start-line="449" selection-start-column="45" selection-end-line="449" selection-end-column="45" />
+        <state relative-caret-position="427">
+          <caret line="82" lean-forward="true" selection-start-line="82" selection-end-line="82" />
         </state>
       </provider>
     </entry>
