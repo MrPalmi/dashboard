@@ -206,13 +206,6 @@ function formatDataStart(data, myData) {
     return p;
 }
 
-
-
-
-
-
-
-
 function addWidget() {
     let selected = document.getElementById('widgetName');
     let param = document.getElementById('param');
@@ -446,6 +439,7 @@ function refreshData(widget) {
     request.open('GET', widget.url + widget.param);
     request.onload = function () {
         let data = JSON.parse(this.response);
+        console.log(data);
         if (data.error) {
             document.getElementById(widget.id).innerHTML = data.message;
         }
@@ -502,14 +496,20 @@ function refreshData(widget) {
     request.send();
 }
 
+function executeAsync(func) {
+    setTimeout(func, 0);
+}
+
 setInterval(function refreshWeather(){
     let Request = new XMLHttpRequest();
     Request.open('GET', '/widgets');
     Request.onload = function () {
         let data = JSON.parse(this.response);
         for (let i = 0; data[i]; i++) {
-            refreshData(data[i]);
+            new refreshData(data[i]);
+            // executeAsync(function() {
+            // });
         }
     };
     Request.send();
-}, 10000);
+}, 1000);
