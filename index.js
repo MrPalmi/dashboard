@@ -123,13 +123,13 @@ app.get("/time/:id", function(req, res) {
           var m = currentTime.getMinutes();
           var s = currentTime.getSeconds();
           var month = '' + (currentTime.getMonth() + 1);
-          if (h > 23)
+          if (h > 23) {
             h = h - 24;
             var day = '' + (currentTime.getDate() + 1);
-          else if (h < 0)
+          } else if (h < 0) {
             h = h + 24
             var day = '' + (currentTime.getDate() - 1);
-          else
+          } else
             var day = '' + currentTime.getDate();
           var year = currentTime.getFullYear();
           if (month.length < 2) month = '0' + month;
@@ -151,13 +151,13 @@ app.get("/time/:id", function(req, res) {
     var m = currentTime.getMinutes();
     var s = currentTime.getSeconds();
     var month = '' + (currentTime.getMonth() + 1);
-    if (h > 23)
+    if (h > 23) {
       h = h - 24;
       var day = '' + (currentTime.getDate() + 1);
-    else if (h < 0)
+    } else if (h < 0) {
       h = h + 24
       var day = '' + (currentTime.getDate() - 1);
-    else
+    } else
       var day = '' + currentTime.getDate();
     var year = currentTime.getFullYear();
     if (month.length < 2) month = '0' + month;
