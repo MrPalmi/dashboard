@@ -225,7 +225,7 @@ function addWidget() {
         }
     }
     if (selected.options[selected.selectedIndex].value - 1 === 3 && map != 0) {
-        console.log('too much map');
+            .log('too much map');
     }
     else {
         addHtmlWidget(selected.selectedIndex - 1);
@@ -439,7 +439,6 @@ function refreshData(widget) {
     request.open('GET', widget.url + widget.param);
     request.onload = function () {
         let data = JSON.parse(this.response);
-        console.log(data);
         if (data.error) {
             document.getElementById(widget.id).innerHTML = data.message;
         }
