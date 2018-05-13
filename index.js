@@ -79,6 +79,7 @@ app.get("/lgtandlat/:id", function(req, res) {
   var url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "&key=AIzaSyCoXD3dN_6TPERUPESZZJCQINpj-9wH6mY"
 
   var body = callAPI(url, function(data) {
+    console.log(data);
     if (data["status"] == "OK") {
       res.json(data["results"][0]["geometry"]["location"]);
     } else {
