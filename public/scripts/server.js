@@ -27,7 +27,7 @@ const widget = [
         'name': 'Steam',
         'url': '/steam/',
         'param': '',
-        'id': ''
+        'id': '',
     },
     {
         'name': 'Allociné',
@@ -71,7 +71,14 @@ firstRequest.open('GET', '/widgets');
 firstRequest.onload = function () {
     let data = JSON.parse(this.response);
     for (let i = 0; data[i]; i++) {
-        addHtmlWidgetStart(data[i])
+        if (data[i].name === 'Google map' && map >= 1) {
+            console.log('too much map');
+        }
+        else {
+            addHtmlWidgetStart(data[i]);
+            if (data[i].name === 'Google Map')
+                map++;
+        }
     }
 };
 firstRequest.send();
@@ -185,7 +192,7 @@ function formatDataStart(data, myData) {
                 /* google map*/
                 break;
             case 'Steam':
-                p = 'Il y a actuellement ' + data + ' joueurs connectés à ' + myData.param + '.';
+                p = 'Il y a actuellement ' + data.value + ' joueurs connectés à ' + data.name + '.';
                 break;
             case 'Allociné':
                 break;
@@ -209,31 +216,25 @@ function addWidget() {
     if (selected.options[selected.selectedIndex].value - 1 != 3) {
         if (selected.options[selected.selectedIndex].value && param.value) {
             widget.forEach(function (elem) {
-                if (elem.name === 'Steam'){
-                    let labelparam = document.getElementById('paramlabel');
-                    elem.param = labelparam.value;
-                }
-                else {
-                    if (elem.name === selected.options[selected.selectedIndex].value) {
-                        elem.param = param.value;
-                    }
+                if (elem.name === selected.options[selected.selectedIndex].value) {
+                    elem.param = param.value;
                 }
             });
         }
     }
-    if (selected.options[selected.selectedIndex].value - 1 === 3 && map != 0) {
+    if (selected.options[selected.selectedIndex].value === 'Google Map' && map > 1) {
         console.log('too much map');
     }
     else {
         addHtmlWidget(selected.selectedIndex - 1);
         idValue++;
-        if (selected.options[selected.selectedIndex].value - 1 === 3)
+        if (selected.options[selected.selectedIndex].value === 'Google Map')
             map++;
     }
 }
 
 function addHtmlWidget(index) {
-    if (index === 3 && map != 0) {
+    if (index === 3 && map >= 1) {
         console.log('too much map');
     }
     else {
@@ -354,7 +355,7 @@ function formatData(index, data) {
                 /* google map*/
                 break;
             case 4:
-                p = 'Il y a actuellement ' + data + ' joueurs connectés à ' + widget[index].param + '.';
+                p = 'Il y a actuellement ' + data.value + ' joueurs connectés à ' + data.name + '.';
                 break;
             case 5:
                 break;
@@ -472,7 +473,7 @@ function refreshData(widget) {
                     /* google map*/
                     break;
                 case 'Steam':
-                    document.getElementById(widget.id).innerHTML = 'Il y a actuellement ' + data + ' joueurs connectés à ' + widget.param + '.';
+                    document.getElementById(widget.id).innerHTML = 'Il y a actuellement ' + data.value + ' joueurs connectés à ' + data.name + '.';
                     break;
                 case 'Allociné':
                     break;
