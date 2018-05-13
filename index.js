@@ -124,16 +124,19 @@ app.get("/time/:id", function(req, res) {
           var s = currentTime.getSeconds();
           var month = '' + (currentTime.getMonth() + 1);
           if (h > 23)
+            h = h - 24;
             var day = '' + (currentTime.getDate() + 1);
+          else if (h < 0)
+            h = h + 24
+            var day = '' + (currentTime.getDate() - 1);
           else
             var day = '' + currentTime.getDate();
           var year = currentTime.getFullYear();
           if (month.length < 2) month = '0' + month;
           if (day.length < 2) day = '0' + day;
-          if (h > 23) h = h - 24;
           if (h < 10) h = "0" + h;
           if (m < 10) m = "0" + m;
-           if (s < 10) s = "0" + s;
+          if (s < 10) s = "0" + s;
           var myClock = {formatted: year + "-" + month + "-" + day + " " + h + ":" + m + ":" + s};
           res.json(myClock);
         } else {
@@ -149,7 +152,11 @@ app.get("/time/:id", function(req, res) {
     var s = currentTime.getSeconds();
     var month = '' + (currentTime.getMonth() + 1);
     if (h > 23)
+      h = h - 24;
       var day = '' + (currentTime.getDate() + 1);
+    else if (h < 0)
+      h = h + 24
+      var day = '' + (currentTime.getDate() - 1);
     else
       var day = '' + currentTime.getDate();
     var year = currentTime.getFullYear();
@@ -163,7 +170,6 @@ app.get("/time/:id", function(req, res) {
     res.json(myClock);
   }
 });
-
 
 app.get("/stockmarket/:id", function(req, res) {
   var symbol = req.params.id;
