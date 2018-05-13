@@ -225,7 +225,7 @@ function addWidget() {
         }
     }
     if (selected.options[selected.selectedIndex].value - 1 === 3 && map != 0) {
-            .log('too much map');
+        console.log('too much map');
     }
     else {
         addHtmlWidget(selected.selectedIndex - 1);
