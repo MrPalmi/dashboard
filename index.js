@@ -106,42 +106,39 @@ app.get("/time/:id", function(req, res) {
   var zone = req.params.id.toLowerCase();
 
   if (timezones[zone] == null) {
-    var url = "https://epitech-dashboard.herokuapp.com/lgtandlat/" + zone
+    var url = "https://epitech-dashboard.herokuapp.com/lgtandlat/" + zone;
     callAPI(url, function(data) {
-        lng = data["lng"]
-        lat = data["lat"]
-  
+        lng = data["lng"];
+        lat = data["lat"];
         var nurl = "http://api.timezonedb.com/v2/get-time-zone?key=7C8ZRCKIUQKD&format=json&by=position&lng=" + lng + "&lat=" + lat;
-  
         var bbody = callAPI(nurl, function(ddata) {
-          
-        if (ddata["status"] == "OK") {
-          timezones[zone] = ddata["gmtOffset"] / 60 / 60;
-          var currentTime = new Date();
-          var offset = timezones[zone];
-          var h = currentTime.getHours() + currentTime.getTimezoneOffset()/60 + offset;
-          var m = currentTime.getMinutes();
-          var s = currentTime.getSeconds();
-          var month = '' + (currentTime.getMonth() + 1);
-          if (h > 23) {
-            h = h - 24;
-            var day = '' + (currentTime.getDate() + 1);
-          } else if (h < 0) {
-            h = h + 24
-            var day = '' + (currentTime.getDate() - 1);
-          } else
-            var day = '' + currentTime.getDate();
-          var year = currentTime.getFullYear();
-          if (month.length < 2) month = '0' + month;
-          if (day.length < 2) day = '0' + day;
-          if (h < 10) h = "0" + h;
-          if (m < 10) m = "0" + m;
-          if (s < 10) s = "0" + s;
-          var myClock = {formatted: year + "-" + month + "-" + day + " " + h + ":" + m + ":" + s};
-          res.json(myClock);
-        } else {
-          res.json({error: 1, message: "Impossible de trouver les coordonées de la recherche"});
-        }
+          if (ddata["status"] == "OK") {
+            timezones[zone] = ddata["gmtOffset"] / 60 / 60;
+            var currentTime = new Date();
+            var offset = timezones[zone];
+            var h = currentTime.getHours() + currentTime.getTimezoneOffset()/60 + offset;
+            var m = currentTime.getMinutes();
+            var s = currentTime.getSeconds();
+            var month = '' + (currentTime.getMonth() + 1);
+            if (h > 23) {
+              h = h - 24;
+              var day = '' + (currentTime.getDate() + 1);
+            } else if (h < 0) {
+              h = h + 24
+              var day = '' + (currentTime.getDate() - 1);
+            } else
+              var day = '' + currentTime.getDate();
+            var year = currentTime.getFullYear();
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+            if (h < 10) h = "0" + h;
+            if (m < 10) m = "0" + m;
+            if (s < 10) s = "0" + s;
+            var myClock = {formatted: year + "-" + month + "-" + day + " " + h + ":" + m + ":" + s};
+            res.json(myClock);
+          } else {
+            res.json({error: 1, message: "Impossible de trouver les coordonées de la recherche"});
+          }
         });
       });
   } else {
