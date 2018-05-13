@@ -52,8 +52,12 @@ app.get("/steam/:id", function(req, res) {
 
   var userStats = new SteamApi.UserStats('steam-api-key');
 
+  var steamapp = new SteamApi.App('steam-api-key');
+
   userStats.GetNumberOfCurrentPlayers(game).done(function(result){
-    res.status(200).json(result);
+    steamapp.appDetails(game).done(function(rresult){
+      res.status(200).json({name: rresult["name"], value: result});
+    });
   });
 });
 
