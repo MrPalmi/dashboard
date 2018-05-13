@@ -130,7 +130,7 @@ function addHtmlWidgetStart(myData) {
             }
             else if (myData.name === 'Subreddit') {
                 const div = document.createElement('div');
-                div.setAttribute('style', 'overflow: auto');
+                div.setAttribute('style', 'overflow-y: auto');
                 for (let i = 0; data.data.children[i]; i++) {
                     const p = document.createElement('p');
                     const a = document.createElement('a');
@@ -289,7 +289,7 @@ function addHtmlWidget(index) {
                 else if (index === 5) {
                     let array = formatAllociné(data);
                     const div = document.createElement('div');
-                    div.setAttribute('style', 'overflow: auto');
+                    div.setAttribute('style', 'overflow-y: auto');
                     for (let i = 0; array[i]; i++) {
                         const p = document.createElement('p');
                         p.textContent = array[i].title + ' { ' + array[i].time + ' }';
@@ -299,7 +299,7 @@ function addHtmlWidget(index) {
                 }
                 else if (index === 8) {
                     const div = document.createElement('div');
-                    div.setAttribute('style', 'overflow: auto');
+                    div.setAttribute('style', 'overflow-y: auto');
                     for (let i = 0; data.data.children[i]; i++) {
                         const p = document.createElement('p');
                         const a = document.createElement('a');
@@ -422,7 +422,7 @@ function formatAllociné(data) {
 
                     array.forEach(function (aElement) {
                         if (aElement.title == element.onShow.movie.title) {
-                            aElement.time += '/' + hour;
+                            aElement.time += ', ' + hour;
                             yet = 1;
                         }
                     }
@@ -447,7 +447,7 @@ function refreshData(widget) {
     request.onload = function () {
         let data = JSON.parse(this.response);
         if (data.error) {
-            document.getElementById(widget.id - 1).innerHTML = data.message;
+            document.getElementById(widget.id).innerHTML = data.message;
         }
         else {
             switch (widget.name) {
