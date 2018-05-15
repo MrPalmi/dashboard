@@ -176,7 +176,7 @@
         // $("#paramlabel").prop('disabled', false);
     }
 
-    function labelToParam() {
+    function labelToParam(event) {
         var opt = $("#widgetName").val();
         if ((opt == "Bourse" || opt == "Steam" || opt == "Allociné" || opt == "Coinmarketcap") && $("#param").val() == '') {
             event.preventDefault();
@@ -206,7 +206,7 @@
 </select>
 <input id="paramlabel" type="text" placeholder="Paramètre du Widget">
 <input id="param" type="hidden">
-<button id="submit" onclick="labelToParam()" >Ajouter</button>
+<button id="submit" onclick="labelToParam(event)">Ajouter</button>
 <span id="paramerror" style="display: none; color: red;">Choisir une option dans la liste</span>
 
 <form id="logout" action="/logout" style="display: inline-block; float: right;">
