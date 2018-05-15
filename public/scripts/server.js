@@ -253,6 +253,7 @@ function addHtmlWidget(index) {
         let request = new XMLHttpRequest();
         request.open('GET', url);
         request.onload = function () {
+            console.log(map);
             let data = JSON.parse(this.response);
             if (data.error) {
                 const p = document.createElement('p');
@@ -261,7 +262,7 @@ function addHtmlWidget(index) {
                 card.appendChild(p);
             }
             else {
-                if (index === 3 && map === 0) {
+                if (index === 3 && map <= 1) {
                     latlong[0] = data.lat;
                     latlong[1] = data.lng;
                     const div = document.createElement('div');
@@ -310,12 +311,15 @@ function addHtmlWidget(index) {
                 }
             }
         };
+        request.send();
         widget[index].id = idValue;
         let frequest = new XMLHttpRequest();
         frequest.open('POST', '/widgets');
         frequest.setRequestHeader('Content-type', 'application/json');
+        frequest.onload = function () {
+          location.reload();
+        };
         frequest.send(JSON.stringify(widget[index]));
-        request.send();
     }
 }
 
@@ -433,63 +437,68 @@ function formatAllociné(data) {
 
 function refreshData(widget) {
     let request = new XMLHttpRequest();
-    request.open('GET', widget.url + widget.param);
-    request.onload = function () {
-        let data = JSON.parse(this.response);
-        if (data.error) {
-            document.getElementById(widget.id).innerHTML = data.message;
-        }
-        else {
-            switch (widget.name) {
-                case 'Météo':
-                    let temps = '';
-                    switch (data.weather[0].main) {
-                        case 'Clouds':
-                            temps = 'nuageux';
-                            break;
-                        case 'Rain':
-                            temps = 'pluvieux';
-                            break;
-                        case 'Snow':
-                            temps = 'neigeux';
-                            break;
-                        case 'Sun':
-                            temps = 'ensoleillé';
-                        default:
-                            temps = 'dégagé';
-                    }
-                    document.getElementById(widget.id).innerHTML = 'A ' + widget.param + ' il fait actuellement ' + data.main.temp + '°C et le temps est ' + temps + '.';
-                    break;
-                case 'Bourse':
-                    document.getElementById(widget.id).innerHTML = 'Le cours de l\'action ' + widget.param + ' est actuellement de ' + data + '$.';
-                    break;
-                case 'Date/Heure':
-                    let array = data.formatted.split(' ');
-                    let date = array[0].split('-');
-                    document.getElementById(widget.id).innerHTML = 'A ' + widget.param + ' il est actuellement ' + array[1] + ' et nous sommes le ' + date[2] + '-' + date[1] + '-' + date[0] + '.';
-                    break;
-                case 'Google Map':
-                    /* google map*/
-                    break;
-                case 'Steam':
-                    document.getElementById(widget.id).innerHTML = 'Il y a actuellement ' + data.value + ' joueurs connectés à ' + data.name + '.';
-                    break;
-                case 'Allociné':
-                    break;
-                case 'Coinmarketcap':
-                    document.getElementById(widget.id).innerHTML = 'La valeur du ' + data.data.name + ' est de ' + data.data.quotes.USD.price + '$.';
-                    document.getElementById(widget.id).innerHTML = 'La valeur du ' + data.data.name + ' est de ' + data.data.quotes.USD.price + '$.';
-                    break;
-                case 'Subreddit Subscriber':
-                    document.getElementById(widget.id).innerHTML = 'Le subreddit "' + widget.param + '" possède ' + data + ' subscribers.';
-                    break;
-                case 'Subreddit':
-                    /* reddit 2 */
-                    break;
+    if (widget.name === 'Google Map' || widget.name === 'Allociné' || widget.name === 'Subreddit Subscriber' || widget.name === 'Subreddit') {
+        return
+    }
+    else {
+        request.open('GET', widget.url + widget.param);
+        request.onload = function () {
+            let data = JSON.parse(this.response);
+            if (data.error) {
+                document.getElementById(widget.id).innerHTML = data.message;
             }
-        }
-    };
-    request.send();
+            else {
+                switch (widget.name) {
+                    case 'Météo':
+                        let temps = '';
+                        switch (data.weather[0].main) {
+                            case 'Clouds':
+                                temps = 'nuageux';
+                                break;
+                            case 'Rain':
+                                temps = 'pluvieux';
+                                break;
+                            case 'Snow':
+                                temps = 'neigeux';
+                                break;
+                            case 'Sun':
+                                temps = 'ensoleillé';
+                            default:
+                                temps = 'dégagé';
+                        }
+                        document.getElementById(widget.id).innerHTML = 'A ' + widget.param + ' il fait actuellement ' + data.main.temp + '°C et le temps est ' + temps + '.';
+                        break;
+                    case 'Bourse':
+                        document.getElementById(widget.id).innerHTML = 'Le cours de l\'action ' + widget.param + ' est actuellement de ' + data + '$.';
+                        break;
+                    case 'Date/Heure':
+                        let array = data.formatted.split(' ');
+                        let date = array[0].split('-');
+                        document.getElementById(widget.id).innerHTML = 'A ' + widget.param + ' il est actuellement ' + array[1] + ' et nous sommes le ' + date[2] + '-' + date[1] + '-' + date[0] + '.';
+                        break;
+                    case 'Google Map':
+                        /* google map*/
+                        break;
+                    case 'Steam':
+                        document.getElementById(widget.id).innerHTML = 'Il y a actuellement ' + data.value + ' joueurs connectés à ' + data.name + '.';
+                        break;
+                    case 'Allociné':
+                        break;
+                    case 'Coinmarketcap':
+                        document.getElementById(widget.id).innerHTML = 'La valeur du ' + data.data.name + ' est de ' + data.data.quotes.USD.price + '$.';
+                        document.getElementById(widget.id).innerHTML = 'La valeur du ' + data.data.name + ' est de ' + data.data.quotes.USD.price + '$.';
+                        break;
+                    case 'Subreddit Subscriber':
+                        document.getElementById(widget.id).innerHTML = 'Le subreddit "' + widget.param + '" possède ' + data + ' subscribers.';
+                        break;
+                    case 'Subreddit':
+                        /* reddit 2 */
+                        break;
+                }
+            }
+        };
+        request.send();
+    }
 }
 
 function executeAsync(func) {
@@ -503,8 +512,6 @@ setInterval(function refreshWeather(){
         let data = JSON.parse(this.response);
         for (let i = 0; data[i]; i++) {
             new refreshData(data[i]);
-            // executeAsync(function() {
-            // });
         }
     };
     Request.send();
