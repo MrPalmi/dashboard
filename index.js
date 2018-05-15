@@ -221,8 +221,10 @@ app.get("/redditsubcount/:id", function(req, res) {
 
 app.get("/subreddit/:id", function(req, res) {
   var subreddit = req.params.id;
+  console.log("subreddit" + subreddit);
   var url = "https://www.reddit.com/r/" + subreddit + ".json";
   var body = callAPI(url, function(data) {
+    console.log("reddit: " + data)
     if (data['data']['children'][0]) {
       res.json(data);
     } else {
@@ -392,6 +394,10 @@ app.get('/logout',function(req,res){
       res.redirect('/login');
     }
   });
+});
+
+app.get('*', function(req, res){
+  res.status(404).json({error: 1, message: "404 La route n'existe pas"});
 });
 
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`));
