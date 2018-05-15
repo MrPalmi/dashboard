@@ -293,6 +293,7 @@ app.post("/widgets/", function (req, res) {
         json = JSON.stringify(obj);
       fs.writeFile('widgets.json', json, 'utf8');
     }});
+    res.status(200).send('Widget successfuly created');
   } else {
     res.status(403).send('403, You are not allowed to be here, try and log in ?');
   }

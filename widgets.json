@@ -1,1 +1,1 @@
-{"admin":{"password":"bestpasswordever","widgets":[{"name":"Météo","url":"/weather/","param":"Paris","id":0},{"name":"Date/Heure","url":"/time/","param":"Paris","id":1},{"name":"Subreddit Subscriber","url":"/redditsubcount/","param":"gaming","id":2}]}}
+{"admin":{"password":"bestpasswordever","widgets":[]}}
