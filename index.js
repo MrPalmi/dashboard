@@ -80,7 +80,7 @@ function callAPI(url, callback) {
 app.get("/lgtandlat/:id", function(req, res) {
   var address = req.params.id;
 
-  var url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "&key=AIzaSyCoXD3dN_6TPERUPESZZJCQINpj-9wH6mY"
+  var url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "&key=AIzaSyBfj9oIufcmAYlb8h2vYwUGnh28Scv7rl8"
 
   var body = callAPI(url, function(data) {
     console.log(data);
