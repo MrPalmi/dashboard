@@ -61,7 +61,7 @@ const container = document.createElement('div');
 container.setAttribute('class', 'container');
 app.appendChild(container);
 
-
+let widgetsTab = [];
 const latlong = [];
 let map = 0;
 let idValue = 0;
@@ -79,6 +79,7 @@ firstRequest.onload = function () {
             if (data[i].name === 'Google Map')
                 map++;
         }
+        widgetsTab.push(data[i])
     }
 };
 firstRequest.send();
@@ -316,8 +317,8 @@ function addHtmlWidget(index) {
         let frequest = new XMLHttpRequest();
         frequest.open('POST', '/widgets');
         frequest.setRequestHeader('Content-type', 'application/json');
-        frequest.onload = function () {
-          location.reload();
+        frequest.onload = function() {
+            location.reload();
         };
         frequest.send(JSON.stringify(widget[index]));
     }
@@ -506,13 +507,7 @@ function executeAsync(func) {
 }
 
 setInterval(function refreshWeather(){
-    let Request = new XMLHttpRequest();
-    Request.open('GET', '/widgets');
-    Request.onload = function () {
-        let data = JSON.parse(this.response);
-        for (let i = 0; data[i]; i++) {
-            new refreshData(data[i]);
-        }
-    };
-    Request.send();
+    for (let i = 0; widgetsTab[i]; i++) {
+        refreshData(widgetsTab[i]);
+    }
 }, 1000);
