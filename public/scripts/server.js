@@ -316,7 +316,6 @@ function addHtmlWidget(index) {
         frequest.setRequestHeader('Content-type', 'application/json');
         frequest.send(JSON.stringify(widget[index]));
         request.send();
-        location.reload();
     }
 }
 
@@ -383,10 +382,10 @@ function formatAllociné(data) {
     let yet = 0;
     var monthTab = ['janvier', 'février', 'mars', 'avril',
         'mai', 'juin', 'juillet', 'août',
-        'septembre', 'octobre', 'novembre', 'décembre']
+        'septembre', 'octobre', 'novembre', 'décembre'];
 
     data.feed.theaterShowtimes[0].movieShowtimes.forEach(function (element) {
-        var display = element.display
+        var display = element.display;
         var seances = display.split("\r\n");
         seances.forEach(function (seance) {
             //On va séparer les heures de la data
@@ -400,7 +399,7 @@ function formatAllociné(data) {
             var seanceMonth = date[2];
             var seanceYear = parseInt(date[3]);
             //Ensuite les séances dispo
-            sep1.splice(0, 1)
+            sep1.splice(0, 1);
             sep1 = sep1.join(':').trim();
             hours = sep1.split(', ');
             //TADAM
@@ -486,7 +485,7 @@ function refreshData(widget) {
                     break;
                 case 'Subreddit':
                     /* reddit 2 */
-                    break
+                    break;
             }
         }
     };
